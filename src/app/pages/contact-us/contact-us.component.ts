@@ -67,8 +67,8 @@ export class ContactUsComponent {
             if (res.success) {
               this.modalService.openResultModal({
                 success: true,
-                header: "Changes Saved Successfully!",
-                description: "Your account details have been updated.",
+                header: "Message Sent!",
+                description: "Thank you for contacting us. We’ll get back to you shortly.",
                 confirm: () => {
                   this.modalService.close(MODAL_TYPE.RESULT);
                 }
