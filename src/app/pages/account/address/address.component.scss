@@ -1,0 +1,10 @@
+.input-group {
+  display: flex;
+  flex-direction: row;
+  input {
+    width: auto!important;
+  }
+  .btn {
+    width: 50px;
+  }
+}

@@ -1,0 +1,61 @@
+<!-- Login Area Start Here -->
+<div class="login-register-area mt-no-text">
+    <div class="container custom-area">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-custom">
+                <div class="login-register-wrapper">
+                    <div class="section-content text-center mb-5">
+                        <h2 class="title-4 mb-2">Login</h2>
+                        <p class="desc-content">Please login using account detail bellow.</p>
+                    </div>
+                    <div *ngIf="error && error !== ''" class="alert alert-danger" role="alert">
+                      {{
+                        error
+                      }}
+                    </div>
+                    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <fieldset>
+                            <div class="single-input-item mb-3">
+                                <input formControlName="email" type="email" placeholder="Email or Username">
+                                <span class="input-text-error" *ngIf="form.controls.email.touched && (form.controls.email.errors !== null || form.controls.email.errors !== undefined)">
+                                    {{
+                                        (form.controls.email.errors && form.controls.email.errors['required'] ? 'Please enter your email or username' : '')||
+                                        (form.controls.email.errors && form.controls.email.errors['notFound'] ? 'Emain or Username not found!' : '')
+                                    }}
+                                </span>
+                            </div>
+                            <div class="single-input-item mb-3">
+                                <input #password formControlName="password" type="password" placeholder="Enter your Password">
+                                <i class="fa fa-{{password.type === 'password' ?'eye' : 'eye-slash'}}" (click)="password.type === 'password' ? password.type = 'text' : password.type = 'password'" style="cursor: pointer; margin-left: -30px; z-index: 100;"></i>
+                                <span class="input-text-error" *ngIf="form.controls.password.touched && (form.controls.password.errors !== null || form.controls.password.errors !== undefined)">
+                                    {{
+                                        (form.controls.password.errors && form.controls.password.errors['required'] ? 'Please enter your password' : '') ||
+                                        (form.controls.password.errors && form.controls.password.errors['incorrect'] ? 'Password is incorrect!' : '')
+                                    }}
+                                </span>
+                            </div>
+                            <div class="single-input-item mb-3">
+                                <div class="login-reg-form-meta d-flex align-items-center justify-content-between">
+                                    <div class="remember-meta mb-3">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="rememberMe">
+                                            <label class="custom-control-label" for="rememberMe">Remember Me</label>
+                                        </div>
+                                    </div>
+                                    <a routerLink="/forgot-password" class="forget-pwd mb-3">Forget Password?</a>
+                                </div>
+                            </div>
+                            <div class="single-input-item mb-3">
+                                <button class="btn flosun-button secondary-btn theme-color rounded-0" [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine">Login</button>
+                            </div>
+                            <div class="single-input-item">
+                                <a routerLink="/register">Creat Account</a>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Login Area End Here -->

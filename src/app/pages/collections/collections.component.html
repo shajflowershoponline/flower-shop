@@ -1,0 +1,113 @@
+<!-- Header Area End Here -->
+<!-- Breadcrumb Area Start Here -->
+<div class="breadcrumbs-area position-relative">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="breadcrumb-content position-relative section-content">
+          <h3 class="title-3">Shop Fullwidth</h3>
+          <ul>
+            <li><a routerLink="/">Home</a></li>
+            <li>Collections</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Breadcrumb Area End Here -->
+<!-- Shop Main Area Start Here -->
+<div class="shop-main-area">
+  <div class="container container-default custom-area">
+    <div class="row flex-row-reverse">
+      <div class="col-12 col-custom widget-mt">
+        <!--shop toolbar start-->
+        <div class="shop_toolbar_wrapper mb-30">
+          <div class="shop_toolbar_btn">
+            <button data-role="grid_4" type="button" class="active btn-grid-4" title="Grid-4"
+              [ngClass]="{ 'active': viewMode === 'GRID_4' }" (click)="viewMode = 'GRID_4'"><i
+                class="fa fa-th"></i></button>
+            <button data-role="grid_3" type="button" class="btn-grid-3" title="Grid-3"
+              [ngClass]="{ 'active': viewMode === 'GRID_3' }" (click)="viewMode = 'GRID_3'"><i
+                class="fa fa-th-large"></i></button>
+            <button data-role="grid_list" type="button" class="btn-list" title="List"
+              [ngClass]="{ 'active': viewMode === 'LIST'}" (click)="viewMode = 'LIST'"><i
+                class="fa fa-th-list"></i></button>
+          </div>
+          <div class="shop-select">
+            <form class="d-flex flex-column w-100" action="#">
+              <div class="form-group">
+                <select [formControl]="sortBy" class="form-control nice-select w-100">
+                  <option [value]="1">Alphabetically, A-Z</option>
+                  <option [value]="2">Product Name: Z</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!--shop toolbar end-->
+        <!-- Shop Wrapper Start -->
+        <div class="row shop_wrapper" [ngClass]="{ 'grid_4' : viewMode === 'GRID_4', 'grid_3' : viewMode === 'GRID_3', 'grid_list' : viewMode === 'LIST'}">
+          @if(!isLoading && collections.length > 0) {
+            @for (item of collections; track $index) {
+            <div class="col-custom product-area" [ngClass]="{ 'col-md-6 col-sm-6 col-lg-3': viewMode === 'GRID_4', 'col-lg-4 col-md-6 col-sm-6': viewMode === 'GRID_3', 'col-12': viewMode === 'LIST' }">
+              <div class="product-item">
+                <div class="single-product position-relative mr-0 ml-0">
+                  <div class="product-image">
+                    <a href="/search/?col={{item?.collectionId}}" class="d-block">
+                      <img [src]="item?.thumbnailFile?.url" alt="" (error)="pictureErrorHandler($event)" class="product-image-1 w-100">
+                    </a>
+                  </div>
+                  <div class="product-content">
+                    <div class="product-title">
+                      <h4 class="title-2"><a href="/search/?col={{item?.collectionId}}">{{item.name}}</a></h4>
+                    </div>
+                  </div>
+                  <div class="product-content-listview">
+                    <div class="product-title">
+                      <h4 class="title-2"><a href="/search/?col={{item?.collectionId}}">{{item.name}}</a></h4>
+                    </div>
+                    <p class="desc-content">{{item.desc}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          }
+        </div>
+        <!-- Shop Wrapper End -->
+
+        <!-- Pagination Controls -->
+        <div class="row">
+          <div class="col-sm-12 col-custom">
+            <div class="toolbar-bottom d-flex flex-column flex-sm-row justify-content-between align-items-center">
+              <div class="pagination">
+                <ul class="d-flex align-items-center gap-2 list-unstyled mb-0">
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(0)">&laquo;</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(pageIndex - 1)">prev</a>
+                  </li>
+                  <li *ngFor="let page of pages" [class.current]="pageIndex === page">
+                    <a (click)="goToPage(page)">{{ page + 1 }}</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(pageIndex + 1)">next</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(totalPages - 1)">&raquo;</a>
+                  </li>
+                </ul>
+              </div>
+              <p class="desc-content text-center text-sm-right mb-0">
+                Showing {{ pageIndex * pageSize + 1 }} - {{ (pageIndex * pageSize + pageSize) > totalItems ? totalItems
+                : (pageIndex * pageSize + pageSize) }} of {{ totalItems }} result
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

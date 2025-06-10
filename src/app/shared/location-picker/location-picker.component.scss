@@ -1,0 +1,39 @@
+.input-group {
+  display: flex;
+  flex-direction: row;
+
+  input {
+    width: auto !important;
+  }
+
+}
+
+.modal-footer {
+
+  button {
+    display: inline-block !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    font-family: "Poppins", sans-serif !important;
+    height: 45px !important;
+    letter-spacing: 0.025em !important;
+    line-height: 45px !important;
+    padding: 0 30px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    width: auto !important;
+    transition: all 0.3s ease 0s !important;
+    border-radius: 0 !important;
+
+    &.cancel {
+      background-color: #d8d8d8 !important;
+      color: #1b1b1c !important;
+    }
+
+    &.confirm {
+      color: #ffffff !important;
+      background-color: #E72463 !important;
+    }
+  }
+
+}

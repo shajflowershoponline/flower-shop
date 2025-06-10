@@ -1,0 +1,40 @@
+<!-- Single Tab Content Start -->
+<div class="tab-pane fade show active" role="tabpanel">
+  <div class="myaccount-content">
+    <h3>Account Details</h3>
+    <div class="account-details-form">
+      <div *ngIf="error && error !== ''" class="alert alert-danger" role="alert">
+        {{
+        error
+        }}
+      </div>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset>
+          <div class="single-input-item mb-3">
+            <label for="display-name" class="required mb-1">Display Name</label>
+            <input formControlName="name" type="text" id="display-name" placeholder="Display Name" />
+          </div>
+          <div class="single-input-item mb-3">
+            <label for="email" class="required mb-1">Email Addres</label>
+            <input formControlName="email" type="email" id="email" placeholder="Email Address" />
+          </div>
+          <div class="single-input-item mb-3">
+            <label for="mobileNumber" class="required mb-1">Mobile number</label>
+            <input type="text"
+              formControlName="mobileNumber" id="mobileNumber" placeholder="+63 912 345 6789"
+              (input)="formatMobileNumber($event)" />
+            <div *ngIf="form.get('mobileNumber')?.invalid && form.get('mobileNumber')?.touched">
+              <small class="text-danger">Please enter a valid PH mobile number (+63 9XX XXX XXXX)</small>
+            </div>
+
+          </div>
+          <div class="single-input-item single-item-button">
+            <button class="btn flosun-button secondary-btn theme-color rounded-0"
+              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine">Save Changes</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Single Tab Content End -->

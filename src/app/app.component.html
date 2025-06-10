@@ -1,0 +1,76 @@
+
+<!-- Header Area Start Here -->
+<header class="main-header-area" [headerClass]="">
+</header>
+<!-- Header Area End Here -->
+
+<router-outlet>
+</router-outlet>
+<!--Footer Area Start-->
+<footer class="footer-area" [footerClass]="footerClass">
+</footer>
+<!--Footer Area End-->
+
+<!-- Scroll to Top Start -->
+<!-- <a class="scroll-to-top" [ngClass]="{ 'show': showScrollToTop }" (click)="scrollToTop()">
+    <i class="lnr lnr-arrow-up"></i>
+</a> -->
+<!-- Scroll to Top End -->
+<!-- <div class="loader" *ngIf="showLoader"><mat-spinner></mat-spinner></div> -->
+
+<!-- Loading Modal -->
+<div class="modal fade show d-block loader" *ngIf="showLoader" tabindex="-1" aria-labelledby="loadingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-body text-center">
+            <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden loading-title">Loading...</span>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+  <!-- resultModal  -->
+  <div class="modal fade result-modal" #resultModal tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <div class="mx-auto">
+            <i class="fa result-icon" style="font-size: 2.5rem;"></i>
+          </div>
+        </div>
+        <div class="modal-body text-center">
+          <h3 class="modal-title fw-bold mb-3"></h3>
+          <p class="mb-2 fs-6 modal-desc"></p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn flosun-button white-btn theme-color rounded-0 modal-confirm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- prompt -->
+  <div class="modal fade prompt-modal" #saveChangesModal tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <div class="mx-auto">
+            <i class="fa fa-exclamation-circle text-danger" style="font-size: 2.5rem;"></i>
+          </div>
+        </div>
+        <div class="modal-body text-center">
+          <h3 class="modal-title fw-bold mb-3"></h3>
+          <p class="mb-2 fs-6 modal-desc"></p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn flosun-button white-btn theme-color rounded-0 modal-close">Cancel</button>
+          <button type="button" class="btn flosun-button primary-btn theme-color rounded-0 modal-confirm">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>

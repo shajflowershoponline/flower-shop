@@ -1,0 +1,42 @@
+<!-- Single Tab Content Start -->
+<div class="tab-pane fade show active" role="tabpanel">
+  <div class="myaccount-content">
+    <h3>Address</h3>
+    <div class="account-details-form">
+      <div *ngIf="error && error !== ''" class="alert alert-danger" role="alert">
+        {{
+        error
+        }}
+      </div>
+      <br>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <fieldset>
+          <div class="single-input-item mb-3">
+            <div class="input-group">
+              <input readonly formControlName="address" type="text" id="address" class="form-control" />
+              <button type="button" class="btn btn-outline-secondary"
+                style="border-top-left-radius: 0; border-bottom-left-radius: 0;" matTooltip="Pick from map" (click)="locationPicker.show(form.get('addressCoordinates').value, form.get('address').value);">
+                <i class="fa fa-pencil"></i>
+              </button>
+            </div>
+          </div>
+          <app-location-map-viewer #locationMapViewer [isReadOnly]="true"></app-location-map-viewer>
+          <br>
+          <div class="single-input-item mb-3">
+            <label for="addressLandmark" class="required mb-1">Landmark(Optional)</label>
+            <input formControlName="addressLandmark" type="addressLandmark" id="addressLandmark" placeholder="Landmark(Optional)" />
+          </div>
+          <div class="single-input-item single-item-button">
+            <button class="btn flosun-button secondary-btn theme-color rounded-0"
+              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine">Save Changes</button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Single Tab Content End -->
+
+<app-location-picker
+#locationPicker
+(onLocationSelected)="onLocationSelected($event)"></app-location-picker>

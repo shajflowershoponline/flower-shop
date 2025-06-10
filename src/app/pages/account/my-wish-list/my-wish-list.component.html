@@ -1,0 +1,93 @@
+<!-- Single Tab Content Start -->
+<div class="tab-pane fade show active" role="tabpanel">
+  <div class="myaccount-content">
+    <h3>My Wishlist</h3>
+    <fieldset>
+      <div class="single-input-item mb-3">
+        <div class="input-group">
+          <input [formControl]="searchCtrl" type="text" id="search" class="form-control" />
+        </div>
+      </div>
+    </fieldset>
+    <div class="myaccount-table table-responsive text-center">
+      <!-- order-list.component.html -->
+      <!-- Wishlist Table Area -->
+      <div class="wishlist-table table-responsive">
+        @if(customerUserWishlists.length > 0) {
+
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th class="pro-thumbnail">Image</th>
+              <th class="pro-title">Product</th>
+              <th class="pro-price">Price</th>
+              <th class="pro-cart">Add to Cart</th>
+              <th class="pro-remove">Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of customerUserWishlists; track item.customerUserWishlistId) {
+
+            <tr>
+              <td class="pro-thumbnail">
+                <a routerLink="/product/{{item.product?.sku}}">
+                  <ng-container *ngFor="let image of item.product?.productImages | slice:0:1; let i = index">
+                    <img [src]="image.file?.url" alt="" class="img-fluid">
+                  </ng-container>
+                </a>
+              </td>
+              <td class="pro-title"><a routerLink="/product/{{item.product?.sku}}">{{item?.product?.name}}<br> s /
+                  {{item?.product?.color}}</a></td>
+              <td class="pro-price"><span>{{item?.product?.price | currency: 'PHP'}}</span></td>
+              <td class="pro-cart"><a (click)="onAddToCart(item?.product)" class="btn product-cart button-icon flosun-button dark-btn">Add
+                  to Cart</a></td>
+              <td class="pro-remove"><a><i class="lnr lnr-trash" (click)="onDelete(item)"></i></a></td>
+            </tr>
+            }
+          </tbody>
+        </table>
+
+          <!-- Pagination Controls -->
+          <div class="row">
+            <div class="col-sm-12 col-custom">
+              <div class="toolbar-bottom d-flex flex-column flex-sm-row justify-content-between align-items-center">
+                <div class="pagination">
+                  <ul class="d-flex align-items-center gap-2 list-unstyled mb-0">
+                    <li [class.disabled]="pageIndex === 0">
+                      <a (click)="goToPage(0)">&laquo;</a>
+                    </li>
+                    <li [class.disabled]="pageIndex === 0">
+                      <a (click)="goToPage(pageIndex - 1)">prev</a>
+                    </li>
+                    <li *ngFor="let page of pages" [class.current]="pageIndex === page">
+                      <a (click)="goToPage(page)">{{ page + 1 }}</a>
+                    </li>
+                    <li [class.disabled]="pageIndex === totalPages - 1">
+                      <a (click)="goToPage(pageIndex + 1)">next</a>
+                    </li>
+                    <li [class.disabled]="pageIndex === totalPages - 1">
+                      <a (click)="goToPage(totalPages - 1)">&raquo;</a>
+                    </li>
+                  </ul>
+                </div>
+                <p class="desc-content text-center text-sm-right mb-0">
+                  Showing {{ pageIndex * pageSize + 1 }} - {{ (pageIndex * pageSize + pageSize) > totalItems ?
+                  totalItems
+                  : (pageIndex * pageSize + pageSize) }} of {{ totalItems }} result
+                </p>
+              </div>
+            </div>
+          </div>
+        } @else {
+        <div class="text-center py-5">
+          <!-- <img src="/assets/images/empty-box.png" alt="No orders" style="max-width: 150px;"> -->
+          <i style="font-size: 2rem;" class="fa fa-heart"></i>
+          <h5 class="mt-3">No wishlist found</h5>
+          <p class="text-muted">You haven't add any wishlist yet.</p>
+        </div>}
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Single Tab Content End -->

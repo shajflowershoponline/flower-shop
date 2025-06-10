@@ -1,0 +1,133 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "shaj-flower-shop-web-client": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/shaj-flower-shop-web-client",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "allowedCommonJsDependencies": ["moment", "moment-timezone"],
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              "src/favicon.ico",
+              "src/assets",
+              "src/OneSignalSDKWorker.js"
+            ],
+            "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
+              "src/styles.scss",
+              "src/assets/css/vendor/bootstrap.min.css",
+              "src/assets/css/vendor/font.awesome.min.css",
+              "src/assets/css/vendor/linearicons.min.css",
+              "src/assets/css/plugins/swiper-bundle.min.css",
+              "src/assets/css/plugins/animate.min.css",
+              "src/assets/css/plugins/jquery-ui.min.css",
+              "src/assets/css/plugins/nice-select.min.css",
+              "src/assets/css/plugins/magnific-popup.css",
+              "src/assets/css/style.css"
+            ],
+            "scripts": [
+              "src/assets/js/vendor/jquery-3.6.0.min.js",
+              "src/assets/js/vendor/jquery-migrate-3.3.2.min.js",
+              "src/assets/js/plugins/jquery-ui.min.js",
+              "src/assets/js/plugins/jquery.magnific-popup.min.js",
+              "src/assets/js/popper.min.js",
+              "src/assets/js/plugins/swiper-bundle.min.js",
+              "src/assets/js/plugins/nice-select.min.js",
+              "src/assets/js/plugins/jquery.ajaxchimp.min.js",
+              "src/assets/js/vendor/bootstrap.bundle.min.js",
+              "src/assets/js/main.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "150kb",
+                  "maximumError": "150kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "shaj-flower-shop-web-client:build:production"
+            },
+            "development": {
+              "buildTarget": "shaj-flower-shop-web-client:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}

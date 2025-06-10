@@ -1,0 +1,63 @@
+<!-- Modal -->
+<div #modalRef class="modal flosun-modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <button type="button" class="close close-button" data-bs-dismiss="modal" aria-label="Close">
+        <span class="close-icon" aria-hidden="true">x</span>
+      </button>
+      <div class="modal-body">
+        <div class="container-fluid custom-area">
+          <div class="row">
+            <div class="col-md-6 col-custom">
+              <div class="modal-product-img">
+                <a class="w-100" href="/product/{{product?.sku}}" target="_blank">
+                  <img class="w-100" [src]="productImage" (error)="pictureErrorHandler($event)" alt="Product">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-6 col-custom">
+              <div class="modal-product">
+                <div class="product-content">
+                  <div class="product-title">
+                    <h4 class="title">{{product?.name}}</h4>
+                  </div>
+                  <div class="price-box">
+                    <span class="regular-price ">{{product?.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price"><del>{{product?.price | currency: 'PHP'}}</del></span>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i> {{product?.interested}}
+                  </div>
+                  <p class="desc-content">{{product?.shortDesc}}</p>
+                  <div class="quantity-with-btn">
+                    <div class="quantity">
+                      <div class="cart-plus-minus">
+                        <input [(ngModel)]="addToCart" class="cart-plus-minus-box" value="0" type="text">
+                        <div class="dec qtybutton" (click)="addToCart = addToCart <= 1 ? 1 : addToCart - 1"><i
+                            class="fa fa-minus"></i></div>
+                        <div class="inc qtybutton" (click)="addToCart = addToCart + 1"><i class="fa fa-plus"></i></div>
+                      </div>
+                    </div>
+                    <div class="add-to_btn">
+                      <a class="btn product-cart button-icon flosun-button dark-btn" (click)="onAddToCart(product)">Add
+                        to cart</a>
+                      <!-- <a class="btn flosun-button secondary-btn rounded-0" (click)="onAddToWishlist(product)">Add to
+                        wishlist</a> -->
+                      <a class="btn flosun-button secondary-btn secondary-border rounded-0"
+                        [class.disabled]="product?.iAmInterested"
+                        (click)="!product?.iAmInterested && onAddToWishlist(product)">
+                        <i class="fa" [class.fa-heart]="product?.iAmInterested"
+                          [class.fa-heart-o]="!product?.iAmInterested" style="margin-right: 5px;"></i>
+                        {{ product?.iAmInterested ? 'Wishlisted' : 'Add to wishlist' }}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

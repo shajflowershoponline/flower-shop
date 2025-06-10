@@ -1,0 +1,193 @@
+<!-- Header Area End Here -->
+<!-- Breadcrumb Area Start Here -->
+<div class="breadcrumbs-area position-relative">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="breadcrumb-content position-relative section-content">
+          <h3 class="title-3">Checkout</h3>
+          <ul>
+            <li><a routerLink="/">Home</a></li>
+            <li>Checkout</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Breadcrumb Area End Here -->
+<!-- cart main wrapper start -->
+<div class="checkout-area mt-no-text pt-no-text pb-no-text mt-text-5">
+  <div class="container custom-container">
+    <div class="row">
+      <div class="col-12 col-custom">
+        <div class="coupon-accordion">
+          <h3 *ngIf="!currentDiscount">Have a coupon? <a id="showcoupon" (click)="showCoupon = !showCoupon">Click here
+              to enter your code</a></h3>
+          <div id="checkout_coupon" class="coupon-checkout-content" [class.show]="currentDiscount || showCoupon">
+            <div class="coupon-info">
+              <div>
+                <p class="checkout-coupon">
+                  <input [(ngModel)]="promoCode" placeholder="Coupon code" type="text">
+                  <input class="coupon-inner_btn" value="Apply Coupon" type="submit" (click)="onApplyCoupon()">
+                </p>
+              </div>
+            </div>
+              @if(promoCode && promoCode !== "" && !isDiscountAppliedToAll) {
+                <br>
+                <i class="discount">This coupon only applies to selected items.</i>
+              } @else {
+                <br>
+                <i style="color: #62d2a2!important;">This coupon applies to all items.</i>
+              }
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 col-12 col-custom">
+        <form [formGroup]="form">
+          <div class="checkbox-form">
+            <h3>Billing Details</h3>
+            <div class="row">
+              <div class="col-md-12 col-custom">
+                <div class="checkout-form-list">
+                  <label>Name <span class="required">*</span></label>
+                  <input formControlName="name" placeholder="" type="text">
+                </div>
+              </div>
+              <div class="col-md-12 col-custom">
+                <!-- <div class="checkout-form-list">
+                  <label>Address <span class="required">*</span></label>
+                  <input formControlName="deliveryAddress" placeholder="Street address" type="text">
+                </div> -->
+                <div class="checkout-form-list single-input-item">
+                  <div class="input-group">
+                    <input readonly formControlName="deliveryAddress" type="text" id="address" class="form-control" />
+                    <button type="button" class="btn btn-outline-secondary"
+                      style="border-top-left-radius: 0; border-bottom-left-radius: 0;" matTooltip="Pick from map" (click)="locationPicker.show(form.value?.deliveryAddressCoordinates, form.value?.deliveryAddress);">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12 col-custom">
+                <div class="checkout-form-list">
+                  <input formControlName="deliveryAddressLandmark" placeholder="Apartment, suite, unit etc. (optional)"
+                    type="text">
+                </div>
+              </div>
+              <div class="col-md-6 col-custom">
+                <div class="checkout-form-list">
+                  <label>Email Address <span class="required">*</span></label>
+                  <input formControlName="email" placeholder="" type="email">
+                </div>
+              </div>
+              <div class="col-md-6 col-custom">
+                <div class="checkout-form-list">
+                  <label>Mobile number <span class="required">*</span></label>
+                  <input type="text" formControlName="mobileNumber" id="mobileNumber" placeholder="+63 912 345 6789"
+                    (input)="formatMobileNumber($event)" />
+                  <div *ngIf="form.get('mobileNumber')?.invalid && form.get('mobileNumber')?.touched">
+                    <small class="text-danger">Please enter a valid PH mobile number (+63 9XX XXX XXXX)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-lg-6 col-12 col-custom">
+        <div class="your-order">
+          <h3>Your order</h3>
+          <div class="your-order-table table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="cart-product-name">Product</th>
+                  <th class="cart-product-total">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of cartItems; track item.cartItemId) {
+                <tr class="cart_item">
+                  <td class="cart-product-name"> {{item?.product?.name }} <strong class="product-quantity">
+                      × {{ item.quantity }}</strong></td>
+                  <td class="cart-product-total text-center">
+                    <span class="amount">{{item.total | currency: 'PHP'}}
+                      @if(currentDiscount && item.product?.discountPrice && item.product?.discountPrice !== item.product.price) {
+                        <br>
+                        <i class="discount">Net discount amount <br>
+                          -{{(item.product?.discountPrice * item.quantity) | currency: 'PHP'}}
+                          (@if(currentDiscount?.type === 'AMOUNT') {
+                          {{currencurrentDiscount.value | currency: 'PHP' }} Off
+                        } @else {
+                          {{currentDiscount.value }} % Off
+                        })
+                        </i>
+
+                      }
+                  </span></td>
+                </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="cart-subtotal">
+                  <th>Cart Subtotal</th>
+                  <td class="text-center"><span class="amount">{{subTotal | currency: 'PHP'}}</span></td>
+                </tr>
+                <tr class="cart-subtotal" *ngIf="currentDiscount && discountAmount > 0">
+                  <th>Discount</th>
+                  <td class="text-center">
+                    <span class="amount discount">{{(discountAmount * -1) | currency: 'PHP'}}</span></td>
+                </tr>
+                <tr class="cart-subtotal">
+                  <th>Net discount</th>
+                  <td class="text-center"><span class="amount">{{subTotalDiscounted | currency: 'PHP'}}</span></td>
+                </tr>
+                <tr class="delivery-fee">
+                  <th>Delivery fee</th>
+                  <td class="text-center"><span class="amount">{{deliveryFee | currency: 'PHP'}}</span></td>
+                </tr>
+                <tr class="order-total">
+                  <th>Total payment</th>
+                  <td class="text-center"><strong><span class="amount">{{total | currency: 'PHP'}}</span></strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="payment-method">
+            <div class="payment-accordion">
+              <div id="accordion">
+                <!-- Direct Bank Transfer -->
+                <div class="card">
+                  <div class="card-header d-flex align-items-center">
+                    <input type="radio" id="bank" name="payment" class="form-check-input me-2"
+                      [(ngModel)]="paymentMethod" value="COD" data-bs-toggle="collapse"
+                      data-bs-target="#collapseOne" aria-expanded="true">
+                    <h4 for="paypal" class="mb-0 w-100">Cash on delivery (COD)</h4>
+                  </div>
+                  <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
+                    <div class="card-body mb-2 mt-2">
+                      <p>Pay with cash upon delivery. Please make sure someone is available to receive and pay for the order.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="order-button-payment mt-4">
+                <button [disabled]="subTotal === 0 || !currentUser.addressCoordinates || deliveryFee === 0 || (promoCode !== currentDiscount.promoCode)" class="btn flosun-button secondary-btn black-color rounded-0 w-100" (click)="onSubmit()">Place
+                  Order</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-location-picker #locationPicker (onLocationSelected)="onLocationSelected($event)"></app-location-picker>

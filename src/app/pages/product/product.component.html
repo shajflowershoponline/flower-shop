@@ -1,0 +1,260 @@
+<!-- Breadcrumb Area Start Here -->
+<div class="breadcrumbs-area position-relative">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="breadcrumb-content position-relative section-content">
+          <h3 class="title-3">Product Details</h3>
+          <ul>
+            <li><a routerLink="/">Home</a></li>
+            <li>Product Details</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Breadcrumb Area End Here -->
+<!-- Single Product Main Area Start -->
+<div class="single-product-main-area">
+  @if (product && !isLoading) {
+  <div class="container container-default custom-area">
+    <div class="row">
+      <div class="col-lg-5 offset-lg-0 col-md-8 offset-md-2 col-custom">
+        <div class="product-details-img">
+          <div class="single-product-img swiper-container gallery-top popup-gallery">
+            <div class="swiper-wrapper">
+              @for (item of product.productImages; track item?.file?.fileId) {
+              <div class="swiper-slide">
+                <a class="w-100">
+                  <img class="w-100" [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
+                </a>
+              </div>
+              }
+            </div>
+          </div>
+          <div class="single-product-thumb swiper-container gallery-thumbs">
+            <div class="swiper-wrapper">
+              @for (item of product.productImages; track item?.file?.fileId) {
+              <div class="swiper-slide">
+                <img [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
+              </div>
+              }
+            </div>
+            <!-- Add Arrows -->
+            <div class="swiper-button-next swiper-button-white"><i class="lnr lnr-arrow-right"></i></div>
+            <div class="swiper-button-prev swiper-button-white"><i class="lnr lnr-arrow-left"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7 col-custom">
+        <div class="product-summery position-relative">
+          <div class="product-head mb-3">
+            <h2 class="product-title">{{product?.name}}</h2>
+          </div>
+          <div class="price-box mb-2">
+            <span class="regular-price ">{{product?.discountPrice | currency: 'PHP'}}</span>
+            <span class="old-price"><del>{{product?.price | currency: 'PHP'}}</del></span>
+          </div>
+          <div class="product-likes mb-3">
+            <i class="fa fa-heart text-danger"></i> {{product.interested}}
+          </div>
+          <div class="sku mb-3">
+            <span>SKU: {{product?.sku}}</span>
+          </div>
+          <p class="desc-content mb-5">{{product?.shortDesc}}</p>
+          <div class="mb-4" *ngIf="product?.selectedDiscounts.length > 0">
+            <h6 class="fw-bold text-uppercase mb-2">Available Vouchers</h6>
+            <div class="border p-3 bg-light rounded">
+              <ul class="list-unstyled mb-0">
+                <li *ngFor="let discount of product?.selectedDiscounts" class="mb-2 d-flex align-items-center">
+                  <i class="fa fa-tag text-success me-2"></i>
+                  <div>
+                    <strong>{{ discount.promoCode }}</strong> - {{ discount.description }}
+                    <!-- <div class="small text-muted">Valid until {{ discount.expiryDate | date: 'mediumDate' }}</div> -->
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="mb-4" *ngIf="product?.selectedGiftAddOns.length > 0">
+            <h6 class="fw-bold text-uppercase mb-2">Free Gifts with Purchase</h6>
+            <div class="border p-3 bg-light rounded">
+              <ul class="list-unstyled mb-0">
+                <li *ngFor="let gift of product?.selectedGiftAddOns" class="mb-2 d-flex align-items-center">
+                  <i class="fa fa-gift text-warning me-2"></i>
+                  <div>
+                    <strong>{{ gift.name }}</strong> - {{ gift.description }}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="quantity-with_btn mb-5">
+            <div class="quantity">
+              <div class="cart-plus-minus">
+                <input class="cart-plus-minus-box" value="0" type="number" [(ngModel)]="addToCart">
+                <div class="dec qtybutton" (click)="addToCart = addToCart > 1 ? addToCart - 1 : 1">-
+                </div>
+                <div class="inc qtybutton" (click)="addToCart = addToCart + 1">+</div>
+              </div>
+            </div>
+            <div class="add-to_cart">
+              <a class="btn product-cart button-icon flosun-button dark-btn" (click)="onAddToCart()">Add to cart</a>
+              <a class="btn flosun-button secondary-btn secondary-border rounded-0"
+                [class.disabled]="product?.iAmInterested" (click)="!product?.iAmInterested && onAddToWishlist()">
+                <i class="fa" [class.fa-heart]="product?.iAmInterested" [class.fa-heart-o]="!product?.iAmInterested"
+                  style="margin-right: 5px;"></i>
+                {{ product?.iAmInterested ? 'Wishlisted' : 'Add to wishlist' }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-no-text">
+      <div class="col-lg-12 col-custom">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active text-uppercase" id="description-tab" data-bs-toggle="tab" href="#description"
+              role="tab" aria-controls="description" aria-selected="true">Description</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-uppercase" id="shipping-tab" data-bs-toggle="tab" href="#shipping" role="tab"
+              aria-controls="shipping" aria-selected="false">Shipping Policy</a>
+          </li>
+        </ul>
+
+        <div class="tab-content mb-text" id="myTabContent">
+          <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+            <div class="desc-content">
+              <p class="mb-3">
+                {{product?.longDesc}}
+              </p>
+            </div>
+          </div>
+
+          <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+            <div class="shipping-policy">
+              <h4 class="title-3 mb-4">Our Shipping Policy</h4>
+              <p class="desc-content mb-2">
+                We are committed to delivering your orders promptly and securely. Our shipping process is optimized to
+                ensure your products arrive on time and in excellent condition. Below are the details of our policy:
+              </p>
+              <ul class="policy-list mb-3">
+                <li><strong>Processing Time:</strong> Orders are processed within 1-2 business days.</li>
+                <li><strong>Delivery Time:</strong> Standard shipping typically arrives within 3-5 business days.</li>
+                <li><strong>Shipping Fee:</strong> Free shipping on orders over $50. Flat rate of $4.99 for others.</li>
+                <li><strong>Tracking:</strong> All orders come with real-time tracking and delivery updates.</li>
+                <li><strong>Returns:</strong> 30-day hassle-free return window for unused and unopened items.</li>
+                <li><strong>Support:</strong> Dedicated 24/7 customer support available via chat and email.</li>
+              </ul>
+              <p class="desc-content mb-2">
+                We partner with leading logistics providers to ensure safe and timely delivery. Once your order is
+                shipped, you’ll receive a tracking link via email.
+              </p>
+              <p class="desc-content mb-2">
+                If you experience any delays or issues with your delivery, please don't hesitate to contact us. Our
+                support team is here to help you resolve any concerns swiftly.
+              </p>
+              <p class="desc-content mb-2">
+                Thank you for shopping with us. We appreciate your trust and are committed to providing the best service
+                possible.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  } @else if(!isLoading) {
+  <div class="container">
+
+    <div class="row">
+      <div class="col-12">
+        <div class="error_form">
+          <h1>404</h1>
+          <h2>Opps! PAGE NOT BE FOUND</h2>
+          <p>Sorry but the page you are looking for does not exist, have been<br> removed, name changed or is
+            temporarily
+            unavailable.</p>
+          <form (submit)="onSearch(search.value); $event.preventDefault()">
+            <input #search placeholder="Search..." type="text">
+            <button type="submit"><i class="fa fa-search"></i></button>
+          </form>
+          <a href="index.html">Back to home page</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @else {
+  <div class="container container-default custom-area">
+    <div class="row">
+      <div class="col-lg-5 offset-lg-0 col-md-8 offset-md-2 col-custom">
+        <div class="product-details-img">
+          <div class="single-product-img">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <a class="w-100">
+                  <ngx-skeleton-loader [theme]="{ width: '100%', height: '200px' }"></ngx-skeleton-loader>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="single-product-thumb">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+              </div>
+              <div class="swiper-slide">
+                <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+              </div>
+              <div class="swiper-slide">
+                <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+              </div>
+            </div>
+            <!-- Add Arrows -->
+            <div class="swiper-button-next swiper-button-white"><i class="lnr lnr-arrow-right"></i></div>
+            <div class="swiper-button-prev swiper-button-white"><i class="lnr lnr-arrow-left"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7 col-custom">
+        <div class="product-summery position-relative">
+          <div class="product-head mb-3">
+            <h2 class="product-title">
+              <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+            </h2>
+          </div>
+          <div class="price-box mb-2">
+            <span class="regular-price ">
+              <ngx-skeleton-loader [theme]="{ width: '100px', height: '30px' }"></ngx-skeleton-loader>
+            </span>
+            <span class="old-price">
+              <del>
+                <ngx-skeleton-loader [theme]="{ width: '100px', height: '30px' }"></ngx-skeleton-loader>
+              </del>
+            </span>
+          </div>
+          <div class="product-likes mb-3">
+            <ngx-skeleton-loader [theme]="{ width: '100px', height: '30px' }"></ngx-skeleton-loader>
+          </div>
+          <div class="sku mb-3">
+            <ngx-skeleton-loader [theme]="{ width: '100%', height: '30px' }"></ngx-skeleton-loader>
+          </div>
+          <p class="desc-content mb-5">
+            <ngx-skeleton-loader [theme]="{ width: '100%', height: '100px' }"></ngx-skeleton-loader>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-no-text">
+      <ngx-skeleton-loader [theme]="{ width: '100%', height: '500px' }"></ngx-skeleton-loader>
+    </div>
+
+  </div>
+  }
+</div>
+<!-- Single Product Main Area End -->

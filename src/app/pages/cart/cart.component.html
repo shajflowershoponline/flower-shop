@@ -1,0 +1,158 @@
+<!-- Header Area End Here -->
+<!-- Breadcrumb Area Start Here -->
+<div class="breadcrumbs-area position-relative">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="breadcrumb-content position-relative section-content">
+          <h3 class="title-3">Shopping Cart</h3>
+          <ul>
+            <li><a routerLink="/">Home</a></li>
+            <li>Shopping Cart</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Breadcrumb Area End Here -->
+<!-- cart main wrapper start -->
+<div class="cart-main-wrapper mt-no-text pt-no-text pb-no-text mt-text-5">
+  <div class="container custom-area">
+    <div class="row">
+      <div class="col-lg-12 col-custom">
+        <!-- Cart Table Area -->
+        <div class="cart-table table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="pro-thumbnail">Image</th>
+                <th class="pro-title">Product</th>
+                <th class="pro-price">Price</th>
+                <th class="pro-quantity">Quantity</th>
+                <th class="pro-subtotal">Total</th>
+                <th class="pro-remove">Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if(updatedCartItems && updatedCartItems.length > 0) {
+              @for (item of updatedCartItems; track item.cartItemId) {
+              <tr>
+                <td class="pro-thumbnail"><a><img class="img-fluid" (error)="pictureErrorHandler($event)"
+                      [src]="item.product.productImages[0].file.url" alt="Product" /></a></td>
+                <td class="pro-title"><a routerLink="/product/{{item?.product?.sku}}">{{item.product.name}}</a></td>
+                <td class="pro-price">
+                  <span>{{item.product.price | currency: 'PHP'}}
+                    @if(currentDiscount && item.product?.discountPrice && item.product?.discountPrice !== item.product.price && item.product?.discountPrice) {
+                    <br><i class="discount">
+                      -{{item.product?.discountPrice | currency: 'PHP'}}
+                      (@if(currentDiscount?.type === 'AMOUNT') {
+                        {{currencurrentDiscount.value | currency: 'PHP' }} Off
+                      } @else {
+                        {{currentDiscount.value }} % Off
+                      })</i>
+                    }
+                  </span>
+                </td>
+                <td class="pro-quantity">
+                  <div class="quantity">
+                    <div class="cart-plus-minus">
+                      <input class="cart-plus-minus-box" [(ngModel)]="item.quantity" type="text"
+                        (ngModelChange)="onEditQuantity()" (input)="onEditQuantity()" />
+                      <button [disabled]="item.quantity === 0"
+                        (click)="item.quantity = item.quantity > 0 ? item.quantity - 1 : item.quantity;onEditQuantity()"
+                        class="dec qtybutton"><i class="fa fa-minus"></i></button>
+                      <button (click)="item.quantity = item.quantity + 1;onEditQuantity()" class="inc qtybutton"><i
+                          class="fa fa-plus"></i></button>
+                    </div>
+                  </div>
+                </td>
+                <td class="pro-subtotal"><span>
+                  {{item.total | currency: 'PHP'}}
+                  @if(currentDiscount && item.product?.discountPrice && item.product?.discountPrice !== item.product.price) {
+                    <br><i class="discount">Net discount amount <br>-{{(item.product?.discountPrice * item.quantity) | currency: 'PHP'}}</i>
+                    }
+                </span></td>
+                <td class="pro-remove"><a (click)="onDeleteCartitem(item)"><i class="lnr lnr-trash"></i></a></td>
+              </tr>
+              }
+              } @else {
+              <tr>
+                <td colspan="6" class="text-center">Your cart is empty.</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <!-- Cart Update Option -->
+        <div class="cart-update-option d-block d-md-flex justify-content-between">
+          <div class="apply-coupon-wrapper">
+            <div class=" d-block d-md-flex">
+              <input type="text" placeholder="Enter Your Coupon Code" required [(ngModel)]="promoCode" />
+              <button class="btn flosun-button primary-btn rounded-0 black-btn" (click)="onConfirmCoupon()">Apply
+                Coupon</button>
+            </div>
+              @if(promoCode && promoCode !== "" && !isDiscountAppliedToAll) {
+                <br>
+                <i class="discount">This coupon only applies to selected items.</i>
+              } @else {
+                <br>
+                <i style="color: #62d2a2!important;">This coupon applies to all items.</i>
+              }
+          </div>
+          <div class="cart-update mt-sm-16">
+            <button class="btn flosun-button primary-btn rounded-0 black-btn" [disabled]="!hasCartItemsChanges"
+              (click)="onUpdateCart()">Update Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-5 ml-auto col-custom">
+        <!-- Cart Calculation Area -->
+        <div class="cart-calculator-wrapper">
+          <div class="cart-calculate-items">
+            <h3>Cart Totals</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <tr>
+                  <td>Sub Total</td>
+                  <td>{{subTotal | currency: 'PHP'}}</td>
+                </tr>
+                <tr *ngIf="currentDiscount && discountAmount > 0">
+                  <td>Discount</td>
+                  <td class="discount">{{(discountAmount * -1) | currency: 'PHP'}}</td>
+                </tr>
+                <tr *ngIf="currentDiscount && discountAmount > 0">
+                  <td>Net discount</td>
+                  <td>{{subTotalDiscounted | currency: 'PHP'}}</td>
+                </tr>
+                <tr>
+                  <td>
+                    Delivery fee
+                    <br>
+                    <small *ngIf="!currentUser.addressCoordinates || deliveryFee === 0" class="text-danger">No delivery
+                      address.</small>
+                  </td>
+                  <td>
+                    {{(deliveryFee) | currency: 'PHP'}}
+                  </td>
+                </tr>
+                <tr class="total">
+                  <td>Total payment</td>
+                  <td class="total-amount">{{total | currency: 'PHP'}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <small *ngIf="!currentUser.addressCoordinates || deliveryFee === 0" class="text-danger">Please setup a <a
+              class="btn-link text-dark" href="/account/address">delivery address</a> to continue.</small>
+          <button href="checkout.html"
+            [disabled]="subTotal === 0 || !currentUser.addressCoordinates || deliveryFee === 0 || hasCartItemsChanges"
+            class="btn flosun-button primary-btn rounded-0 black-btn w-100" (click)="onCheckout()">Proceed To
+            Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

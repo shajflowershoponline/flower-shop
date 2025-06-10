@@ -1,0 +1,108 @@
+<!-- Single Tab Content Start -->
+<div class="tab-pane fade show active" role="tabpanel">
+  <div class="myaccount-content">
+    <h3>My Orders</h3>
+    <fieldset>
+      <div class="single-input-item mb-3">
+        <div class="input-group">
+          <input [formControl]="searchCtrl" type="text" id="search" class="form-control" />
+        </div>
+      </div>
+    </fieldset>
+    <div class="myaccount-table table-responsive text-center">
+      <!-- order-list.component.html -->
+      <div class="my-1">
+
+        @if (orders.length > 0) {
+        @for (order of orders; track order.orderId) {
+        <div class="border rounded p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <div>
+              <h5 class="mb-1">Order #{{ order.orderCode }}</h5>
+              <span class="badge"
+                [ngClass]="{ 'bg-warning text-dark' : order.status === 'PENDING', 'bg-danger': order.status === 'CANCELLED'}">{{
+                order.status }}</span>
+            </div>
+            <div class="text-end">
+              <button class="btn flosun-button white-btn rounded-0" *ngIf="order.status !== 'CANCELLED'"
+                (click)="onCancelOrder(order.orderCode)">Cancel Order</button>
+            </div>
+          </div>
+
+          @for (item of order.orderItems; track item?.product?.sku) {
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <div class="fw-semibold">{{ item?.product?.name }}</div>
+              <div class="text-muted small">Variation:
+                {{ item.size === 1 ? 'SMALL' : '' }}
+                {{ item.size === 2 ? 'MEDIUM ' : '' }}
+                {{ item.size === 3 ? 'LARGE' : '' }} | Qty: {{ item.quantity }}</div>
+            </div>
+            <div class="fw-bold text-end">
+              {{ item.totalAmount | currency:'PHP' }}
+            </div>
+          </div>
+          }
+          <div class="d-flex justify-content-between border-top pt-3 mt-4">
+            <div></div> <!-- Empty left column -->
+            <div class="text-end">
+              Delivery fee: {{ order.deliveryFee | currency:'PHP' }}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between border-top pt-3 mt-4">
+            <div></div> <!-- Empty left column -->
+            <div class="fw-bold fs-5 text-danger text-end">
+              Order Total: {{ order.total | currency:'PHP' }}
+            </div>
+          </div>
+
+        </div>
+        }
+        <!-- Pagination Controls -->
+        <div class="row">
+          <div class="col-sm-12 col-custom">
+            <div class="toolbar-bottom d-flex flex-column flex-sm-row justify-content-between align-items-center">
+              <div class="pagination">
+                <ul class="d-flex align-items-center gap-2 list-unstyled mb-0">
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(0)">&laquo;</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(pageIndex - 1)">prev</a>
+                  </li>
+                  <li *ngFor="let page of pages" [class.current]="pageIndex === page">
+                    <a (click)="goToPage(page)">{{ page + 1 }}</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(pageIndex + 1)">next</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(totalPages - 1)">&raquo;</a>
+                  </li>
+                </ul>
+              </div>
+              <p class="desc-content text-center text-sm-right mb-0">
+                Showing {{ pageIndex * pageSize + 1 }} - {{ (pageIndex * pageSize + pageSize) > totalItems ?
+                totalItems
+                : (pageIndex * pageSize + pageSize) }} of {{ totalItems }} result
+              </p>
+            </div>
+          </div>
+        </div>
+        }
+        @else {
+        <div class="text-center py-5">
+          <!-- <img src="/assets/images/empty-box.png" alt="No orders" style="max-width: 150px;"> -->
+          <i style="font-size: 2rem;" class="fa fa-truck"></i>
+          <h5 class="mt-3">No orders found</h5>
+          <p class="text-muted">You haven't placed any orders yet.</p>
+        </div>
+        }
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Single Tab Content End -->

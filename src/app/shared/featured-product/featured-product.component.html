@@ -1,0 +1,75 @@
+<!--Product Area Start-->
+<div class="product-area mt-text-2">
+  <div class="container custom-area-2 overflow-hidden">
+    <div class="row">
+      <!--Section Title Start-->
+      <div class="col-12 col-custom">
+        <div class="section-title text-center mb-30">
+          <span class="section-title-1">Wonderful gift</span>
+          <h3 class="section-title-3">Featured Products</h3>
+        </div>
+      </div>
+      <!--Section Title End-->
+    </div>
+    <div class="row product-row">
+      <div class="col-12 col-custom">
+        <div class="product-slider swiper-container anime-element-multi">
+          <div class="swiper-wrapper">
+
+            @if(!isLoading && products.length > 0) {
+            @for (item of products; track item.sku) {
+            <div class="single-item swiper-slide">
+              <!--Single Product Start-->
+              <div class="single-product position-relative mb-30">
+                <div class="product-image">
+                  <a routerLink="/product/{{item?.sku}}" class="d-block">
+                    <div *ngFor="let image of item.productImages | slice:0:2; let i = index">
+                      <img [src]="image.file.url"
+                        [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
+                        alt="Image {{ i + 1 }}">
+                    </div>
+                  </a>
+                  <span *ngIf="item.isSale" class="onsale">Sale!</span>
+                  <div class="add-action d-flex flex-column position-absolute">
+                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                      <i [class.active]="item.iAmInterested" class="lnr lnr-heart" data-toggle="tooltip"
+                        data-placement="left" title="Wishlist"></i>
+                    </a>
+                    <a title="Quick View" (click)="onOpenQuickView(item)">
+                      <i class="lnr lnr-eye" data-toggle="tooltip" data-placement="left" title="Quick View"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="product-content">
+                  <div class="product-title">
+                    <h4 class="title-2"> <a routerLink="/product/{{item?.sku}}">{{item.name}}</a></h4>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i> {{item.interested}}
+                  </div>
+                  <div class="price-box">
+                    <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
+                  </div>
+                  <a class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
+                </div>
+              </div>
+              <!--Single Product End-->
+            </div>
+            }
+            } @else if(!isLoading) {
+
+            } @else {
+
+            }
+          </div>
+          <!-- Slider pagination -->
+          <div class="swiper-pagination default-pagination"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Product Area End-->
+
+<app-quick-product-view-modal #quickView (onModalActionChange)="onModalActionChange($event)"></app-quick-product-view-modal>

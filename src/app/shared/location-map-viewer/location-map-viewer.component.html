@@ -1,0 +1,17 @@
+<google-map
+  [id]="mapId"
+  [mapId]="mapId"
+  height="500px"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom"
+  [options]="mapOptions"
+  (mapClick)="onMapClick($event)">
+
+  <map-marker
+    #marker
+    [position]="markerPosition"
+    [options]="markerOptions"
+    (mapDragend)="onMarkerDragEnd($event)">
+  </map-marker>
+</google-map>

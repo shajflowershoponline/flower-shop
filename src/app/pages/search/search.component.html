@@ -1,0 +1,287 @@
+<!-- Shop Main Area Start Here -->
+<div class="shop-main-area">
+  <div class="container container-default custom-area">
+    <div class="row flex-row-reverse">
+      <div class="col-lg-9 col-12 col-custom mt-3">
+        <!--shop toolbar start-->
+        <div class="shop_toolbar_wrapper mb-30">
+          <div class="shop_toolbar_btn">
+            <button data-role="grid_3" type="button" class="btn-grid-3" title="Grid"
+              [ngClass]="{ 'active': viewMode === 'GRID' }" (click)="viewMode = 'GRID'"><i
+                class="fa fa-th"></i></button>
+            <button data-role="grid_list" type="button" class="btn-list" title="List"
+              [ngClass]="{ 'active': viewMode === 'LIST'}" (click)="viewMode = 'LIST'"><i
+                class="fa fa-th-list"></i></button>
+          </div>
+          <div class="shop-select">
+            <form class="d-flex flex-column w-100" action="#">
+              <div class="form-group">
+                <select [formControl]="sortBy" class="form-control nice-select w-100">
+                  <option [value]="1">Alphabetically, A-Z</option>
+                  <option [value]="2">Sort by popularity</option>
+                  <option [value]="3">Sort by price: low to high</option>
+                  <option [value]="4">Sort by price: high to low</option>
+                  <option [value]="5">Alphabetically, Z-A</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!--shop toolbar end-->
+        <!-- Shop Wrapper Start -->
+        <div class="row shop_wrapper" [ngClass]="{ 'grid_3' : viewMode === 'GRID', 'grid_list' : viewMode === 'LIST'}">
+
+          @if(!isLoading && products.length > 0) {
+          @for (item of products; track item.sku) {
+          <div class="col-custom product-area"
+            [ngClass]="{ 'col-lg-4 col-md-6 col-sm-6' : viewMode === 'GRID', 'col-12' : viewMode === 'LIST'}">
+            <div class="product-item">
+              <div class="single-product position-relative mr-0 ml-0">
+                <div class="product-image">
+                  <a routerLink="/product/{{item?.sku}}" class="d-block">
+                    <!-- <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                        <img [src]="image.file?.url" alt="" class="product-image-1 w-100" *ngIf="i === 0">
+                        <img [src]="image.file?.url" alt="" class="product-image-2 position-absolute w-100"
+                          *ngIf="i === 1">
+                      </div> -->
+                    <div *ngFor="let image of item.productImages | slice:0:2; let i = index">
+                      <img [src]="image.file.url"
+                        [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
+                        alt="Image {{ i + 1 }}">
+                    </div>
+
+                  </a>
+                  <span *ngIf="item.isSale" class="onsale">Sale!</span>
+                  <div class="add-action d-flex flex-column position-absolute">
+                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                      <i [class.active]="item.iAmInterested" class="lnr lnr-heart" data-toggle="tooltip"
+                        data-placement="left" title="Wishlist"></i>
+                    </a>
+                    <a title="Quick View" (click)="onOpenQuickView(item)">
+                      <i class="lnr lnr-eye" data-toggle="tooltip" data-placement="left" title="Quick View"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="product-content">
+                  <div class="product-title">
+                    <h4 class="title-2"> <a routerLink="/product/{{item?.sku}}">{{item.name}}</a></h4>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i> {{item.interested}}
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
+                  </div>
+                  <a class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
+                </div>
+                <div class="product-content-listview">
+                  <div class="product-title">
+                    <h4 class="title-2"> <a>{{item.name}}</a></h4>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i> {{item.interested}}
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
+                  </div>
+                  <p class="desc-content">{{item.shortDesc}}</p>
+                  <div class="button-listview">
+                    <a class="btn product-cart button-icon flosun-button dark-btn" data-toggle="tooltip"
+                      (click)="onAddToCart(item)" data-placement="top" title="Add to Cart"> <span>Add to Cart</span>
+                    </a>
+                    <a class="list-icon" title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                      <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="top" title="Wishlist"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+          } @else if(!isLoading) {
+          <!-- No Results Placeholder -->
+          <div class="text-center py-5">
+            <i style="font-size: 2rem;" class="fa fa-flower"></i>
+            <h4 class="text-muted">No products found</h4>
+            <p>Try searching for a different flower, occasion, or collection.</p>
+          </div>
+
+          } @else {
+
+          <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" class="col-custom product-area"
+            [ngClass]="{ 'col-lg-4 col-md-6 col-sm-6' : viewMode === 'GRID', 'col-12' : viewMode === 'LIST'}">
+            <div class="product-item">
+              <div class="single-product position-relative mr-0 ml-0">
+                <div class="product-image">
+                  <a class="d-block">
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '100%' }"></ngx-skeleton-loader>
+                  </a>
+                </div>
+                <div class="product-content">
+                  <div class="product-title">
+                    <h4 class="title-2">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+                    </h4>
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </span>
+                    <span class="old-price"><del>
+                        <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                      </del></span>
+                  </div>
+                </div>
+                <div class="product-content-listview">
+                  <div class="product-title">
+                    <h4 class="title-2">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </h4>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i>
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price ">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </span>
+                    <span class="old-price"><del>
+                        <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader></del>
+                    </span>
+                  </div>
+                  <p class="desc-content">
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '40px' }"></ngx-skeleton-loader>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        <!-- Shop Wrapper End -->
+        <!-- Bottom Toolbar Start -->
+
+        <!-- Pagination Controls -->
+        <div class="row">
+          <div class="col-sm-12 col-custom">
+            <div class="toolbar-bottom d-flex flex-column flex-sm-row justify-content-between align-items-center">
+              <div class="pagination">
+                <ul class="d-flex align-items-center gap-2 list-unstyled mb-0">
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(0)">&laquo;</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === 0">
+                    <a (click)="goToPage(pageIndex - 1)">prev</a>
+                  </li>
+                  <li *ngFor="let page of pages" [class.current]="pageIndex === page">
+                    <a (click)="goToPage(page)">{{ page + 1 }}</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(pageIndex + 1)">next</a>
+                  </li>
+                  <li [class.disabled]="pageIndex === totalPages - 1">
+                    <a (click)="goToPage(totalPages - 1)">&raquo;</a>
+                  </li>
+                </ul>
+              </div>
+              <p class="desc-content text-center text-sm-right mb-0">
+                Showing {{ pageIndex * pageSize + 1 }} - {{ (pageIndex * pageSize + pageSize) > totalItems ? totalItems
+                : (pageIndex * pageSize + pageSize) }} of {{ totalItems }} result
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Bottom Toolbar End -->
+      </div>
+      <div class="col-lg-3 col-12 col-custom">
+        <!-- Sidebar Widget Start -->
+        <aside class="sidebar_widget mt-3">
+          <div class="widget_inner">
+            <div class="widget-list widget-mb-1">
+              <h3 class="widget-title">Price Filter</h3>
+              <form (submit)="onApplyFilter($event)">
+                <div id="slider-range"></div>
+                <button type="submit">Filter</button>
+                <input type="text" id="amount" [value]="priceLabel" readonly>
+              </form>
+            </div>
+
+            @if (collections.length > 0) {
+            <div class="widget-list widget-mb-1">
+              <h3 class="widget-title">Collections ({{collections.length}})</h3>
+              <div class="sidebar-body">
+                <ul class="tags">
+                  @for(item of collections; track item.collectionId) {
+                  <li>
+                    <a (click)="setFilter('COLLECTION', item.collectionId, !selectedCollection.includes(item.collectionId))"
+                      [class.selected]="selectedCollection.includes(item.collectionId)">
+                      {{item.name}}({{item.count}})
+                      <i *ngIf="selectedCollection.includes(item.collectionId)" _ngcontent-ng-c2682429693=""
+                        class="fa fa-check"></i>
+                    </a>
+                  </li>
+                  }
+                </ul>
+              </div>
+              <a *ngIf="selectedCollection && selectedCollection.length > 0" class="btn-link mt-4"
+                (click)="setFilter('COLLECTION', null)">Clear</a>
+            </div>
+            }
+
+            @if (categories.length > 0) {
+            <div class="widget-list widget-mb-1">
+              <h3 class="widget-title">Categories ({{categories.length}})</h3>
+              <div class="sidebar-body">
+                <ul class="tags">
+                  @for(item of categories; track item.categoryId) {
+                  <li>
+                    <a (click)="setFilter('CATEGORY', item.categoryId, !selectedCategory.includes(item.categoryId))"
+                      [class.selected]="selectedCategory.includes(item.categoryId)">
+                      {{item.name}}({{item.count}})
+                      <i *ngIf="selectedCategory.includes(item.categoryId)" _ngcontent-ng-c2682429693=""
+                        class="fa fa-check"></i>
+                    </a>
+                  </li>
+                  }
+                </ul>
+              </div>
+              <a *ngIf="selectedCategory && selectedCategory.length > 0" class="btn-link mt-4"
+                (click)="setFilter('CATEGORY', null)">Clear</a>
+            </div>
+            }
+
+            @if (colors.length > 0) {
+            <div class="widget-list widget-mb-1">
+              <h3 class="widget-title">Colors ({{colors.length}})</h3>
+              <div class="sidebar-body">
+                <ul class="tags">
+                  @for(item of colors; track item.name) {
+                  <li>
+                    <a (click)="setFilter('COLOR', item.name, !selectedColor.includes(item.name))"
+                      [class.selected]="selectedColor.includes(item.name)">
+                      {{item.name}}({{item.count}})
+                      <i *ngIf="selectedColor.includes(item.name)" _ngcontent-ng-c2682429693="" class="fa fa-check"></i>
+                    </a>
+                  </li>
+                  }
+                </ul>
+              </div>
+              <a *ngIf="selectedColor && selectedColor.length > 0" class="btn-link mt-4"
+                (click)="setFilter('COLOR', null)">Clear</a>
+            </div>
+            }
+          </div>
+        </aside>
+        <!-- Sidebar Widget End -->
+      </div>
+    </div>
+  </div>
+</div>
+<app-quick-product-view-modal #quickView></app-quick-product-view-modal>

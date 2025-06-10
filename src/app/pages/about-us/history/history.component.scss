@@ -1,0 +1,18 @@
+::ng-deep {
+  header {
+    &.hidden {
+      display: none !important;
+    }
+  }
+  footer {
+    &.hidden {
+      display: none !important;
+    }
+  }
+  .our-history-area {
+    margin-top: 0!important;
+  }
+  .our-history-area {
+    margin-top: 0!important;
+  }
+}

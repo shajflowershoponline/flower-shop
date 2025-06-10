@@ -1,0 +1,81 @@
+
+<!-- Breadcrumb Area Start Here -->
+<div class="breadcrumbs-area position-relative">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="breadcrumb-content position-relative section-content">
+                    <h3 class="title-3">My Account</h3>
+                    <ul>
+                        <li><a routerLink="/">Home</a></li>
+                        <li>My Account</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb Area End Here -->
+<!-- my account wrapper start -->
+<div class="my-account-wrapper mt-no-text">
+    <div class="container container-default-2 custom-area">
+        <div class="row">
+            <div class="col-lg-12 col-custom">
+                <!-- My Account Page Start -->
+                <div class="myaccount-page-wrapper">
+                    <!-- My Account Tab Menu Start -->
+                    <div class="row">
+                        <div class="col-lg-4 col-md-3 col-custom">
+                            <div class="myaccount-tab-menu nav" role="tablist">
+
+                                <a routerLink="account-details" routerLinkActive="active" data-bs-toggle="tab"><i class="fa fa-user"></i> Account Details</a>
+                                <a routerLink="address" routerLinkActive="active" data-bs-toggle="tab"><i class="fa fa-map-marker"></i> Address </a>
+                                <a routerLink="my-orders" routerLinkActive="active" data-bs-toggle="tab"><i class="fa fa-cart-arrow-down"></i> My Orders</a>
+                                <a routerLink="my-wish-list" routerLinkActive="active" data-bs-toggle="tab"><i class="fa fa-heart"></i> My Wishlist</a>
+                                <a routerLink="change-password" routerLinkActive="active" data-bs-toggle="tab"><i class="fa fa-user"></i> Change Password</a>
+                                <a data-bs-toggle="modal" data-bs-target="#deactivateModal"><i class="fa fa-sign-out"></i> Logout</a>
+
+                            </div>
+                        </div>
+                        <!-- My Account Tab Menu End -->
+
+                        <!-- My Account Tab Content Start -->
+                        <div class="col-lg-8 col-md-9 col-custom">
+                            <div class="tab-content" id="myaccountContent">
+
+                                <!-- Router link -->
+                                <router-outlet>
+                                </router-outlet>
+                                <!--  -->
+
+                            </div>
+                        </div> <!-- My Account Tab Content End -->
+                    </div>
+                </div> <!-- My Account Page End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- my account wrapper end -->
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="deactivateModal" tabindex="-1" aria-labelledby="deactivateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <div class="mx-auto">
+            <i class="fa fa-exclamation-circle text-danger" style="font-size: 2.5rem;"></i>
+          </div>
+        </div>
+        <div class="modal-body text-center">
+          <h3 class="modal-title fw-bold mb-3" id="deactivateModalLabel">Log out of your account?</h3>
+          <p class="mb-2 fs-6">You will be logged out of your account and will need to log in again to access your data. Are you sure you want to log out?</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center">
+          <button type="button" class="btn flosun-button white-btn theme-color rounded-0" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn flosun-button primary-btn theme-color rounded-0" (click)="logOut()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </div>
