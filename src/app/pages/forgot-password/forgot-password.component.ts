@@ -93,10 +93,13 @@ export class ForgotPasswordComponent {
         return;
     }
     try{
+      this.isProcessing = true;
+      this.submitForm.disable();
       const params = this.submitForm.value;
       this.loaderService.show();
       this.authService.resetSubmit(params)
         .subscribe(async res => {
+          this.submitForm.enable();
           this.isProcessing = false;
           this.loaderService.hide();
           if (res.success) {
@@ -135,11 +138,13 @@ export class ForgotPasswordComponent {
             });
           }
         }, async (res) => {
+          this.submitForm.enable();
           this.error = res.error.message;
           this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
           this.loaderService.hide();
         });
     } catch (e){
+      this.submitForm.enable();
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
       this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
       this.loaderService.hide();
@@ -155,11 +160,13 @@ export class ForgotPasswordComponent {
     try {
       if(this.otp && this.otp !=="") {
         this.isProcessing = true;
+        this.submitForm.disable();
         this.loaderService.show();
         this.authService.resetVerify({
           otp: this.otp,
           email: this.submitForm.value.email,
         }).subscribe(async res=> {
+          this.submitForm.enable();
           this.loaderService.hide();
           this.isProcessing = false;
           if(res.success && res.data) {
@@ -181,6 +188,7 @@ export class ForgotPasswordComponent {
             });
           }
         }, async (err)=> {
+          this.submitForm.enable();
           this.isProcessing = false;
           this.loaderService.hide();
           this.error = Array.isArray(err.message) ? err.message[0] : err.message;
@@ -195,9 +203,11 @@ export class ForgotPasswordComponent {
             }
           });
         }, async ()=> {
+          this.submitForm.enable();
         });
       }
     } catch(ex) {
+      this.submitForm.enable();
       this.isProcessing = false;
       this.loaderService.hide();
       this.error = Array.isArray(ex.message) ? ex.message[0] : ex.message;
@@ -238,6 +248,8 @@ export class ForgotPasswordComponent {
       this.resetForm.markAllAsTouched();
       if(this.resetForm.valid && !this.resetForm.invalid ) {
         this.isProcessing = true;
+        this.submitForm.disable();
+        this.resetForm.disable();
         this.loaderService.show();
         this.authService.resetPassword({
           email: this.submitForm.value.email,
@@ -245,6 +257,8 @@ export class ForgotPasswordComponent {
           password: this.resetForm.value.password,
           confirmPassword: this.resetForm.value.confirmPassword,
         }).subscribe(async res=> {
+          this.submitForm.enable();
+          this.resetForm.enable();
           if(res.success) {
             this.mode = "SUBMIT";
             await this.loaderService.hide();
@@ -276,7 +290,8 @@ export class ForgotPasswordComponent {
             });
           }
         }, async (err)=> {
-
+          this.submitForm.enable();
+          this.resetForm.enable();
           this.error = err?.message ? err?.message.toString() : err?.toString();
           this.isProcessing = false;
           this.loaderService.hide();
@@ -290,9 +305,13 @@ export class ForgotPasswordComponent {
             }
           });
         }, async ()=> {
+          this.submitForm.enable();
+          this.resetForm.enable();
         });
       }
     } catch(ex) {
+      this.submitForm.enable();
+      this.resetForm.enable();
       this.error = ex?.message ? ex?.message.toString() : ex?.toString();
       this.isProcessing = false;
       this.loaderService.hide();

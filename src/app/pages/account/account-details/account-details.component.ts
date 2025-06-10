@@ -123,6 +123,7 @@ export class AccountDetailsComponent {
 
   async onSaveChanges() {
     try {
+      this.form.disable();
       this.isProcessing = true;
       this.loaderService.show();
       this.customerUserService.updateProfile(this.currentUser?.customerUserCode, {
@@ -134,6 +135,7 @@ export class AccountDetailsComponent {
         .subscribe(async res => {
           this.isProcessing = false;
           this.loaderService.hide();
+          this.form.enable();
           if (res.success) {
             this.modalService.openResultModal({
               success: true,
@@ -163,6 +165,7 @@ export class AccountDetailsComponent {
             });
           }
         }, async (res) => {
+          this.form.enable();
           this.isProcessing = false;
           this.loaderService.hide();
           this.error = res.error.message;
@@ -177,6 +180,7 @@ export class AccountDetailsComponent {
           });
         });
     } catch (e) {
+      this.form.enable();
       this.isProcessing = false;
       this.loaderService.hide();
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;

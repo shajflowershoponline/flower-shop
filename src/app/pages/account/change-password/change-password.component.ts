@@ -126,6 +126,7 @@ export class ChangePasswordComponent {
 
   private onSubmitEmailConfirm() {
     try{
+      this.submitForm.disable();
       this.isProcessing = true;
       const params = this.submitForm.value;
       this.loaderService.show();
@@ -133,6 +134,7 @@ export class ChangePasswordComponent {
         .subscribe(async res => {
           this.isProcessing = false;
           this.loaderService.hide();
+          this.submitForm.enable();
           if (res.success) {
             this.otpModalInstance = new Modal(this.otpModal.nativeElement, {
               backdrop: 'static',
@@ -164,6 +166,7 @@ export class ChangePasswordComponent {
             });
           }
         }, async (res) => {
+          this.submitForm.enable();
           this.isProcessing = false;
           this.loaderService.hide();
           this.error = res.error.message;
@@ -179,6 +182,7 @@ export class ChangePasswordComponent {
           });
         });
     } catch (e){
+      this.submitForm.enable();
       this.isProcessing = false;
       this.loaderService.hide();
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
@@ -201,12 +205,14 @@ export class ChangePasswordComponent {
       if(this.otp && this.otp !=="") {
         this.isProcessing = true;
         this.loaderService.show();
+        this.submitForm.disable();
         this.authService.resetVerify({
           otp: this.otp,
           email: this.submitForm.value.email,
         }).subscribe(async res=> {
           this.loaderService.hide();
           this.isProcessing = false;
+          this.submitForm.enable();
           if(res.success && res.data) {
             this.otpModalInstance.hide();
             this.mode = "RESET";
@@ -226,6 +232,7 @@ export class ChangePasswordComponent {
             });
           }
         }, async (err)=> {
+          this.submitForm.enable();
           this.isProcessing = false;
           this.loaderService.hide();
           this.error = Array.isArray(err.message) ? err.message[0] : err.message;
@@ -243,6 +250,7 @@ export class ChangePasswordComponent {
         });
       }
     } catch(ex) {
+      this.submitForm.enable();
       this.isProcessing = false;
       this.loaderService.hide();
       this.error = Array.isArray(ex.message) ? ex.message[0] : ex.message;
@@ -289,6 +297,8 @@ export class ChangePasswordComponent {
     try {
       this.resetForm.markAllAsTouched();
       if(this.resetForm.valid && !this.resetForm.invalid ) {
+        this.resetForm.disable();
+        this.submitForm.disable();
         this.isProcessing = true;
         this.loaderService.show();
         this.authService.resetPassword({
@@ -297,6 +307,8 @@ export class ChangePasswordComponent {
           password: this.resetForm.value.password,
           confirmPassword: this.resetForm.value.confirmPassword,
         }).subscribe(async res=> {
+          this.resetForm.enable();
+          this.submitForm.enable();
           if(res.success) {
             this.mode = "SUBMIT";
             await this.loaderService.hide();
@@ -331,7 +343,8 @@ export class ChangePasswordComponent {
             });
           }
         }, async (err)=> {
-
+          this.resetForm.enable();
+          this.submitForm.enable();
           this.error = err?.message ? err?.message.toString() : err?.toString();
           this.isProcessing = false;
           this.loaderService.hide();
@@ -345,9 +358,13 @@ export class ChangePasswordComponent {
             }
           });
         }, async ()=> {
+          this.resetForm.enable();
+          this.submitForm.enable();
         });
       }
     } catch(ex) {
+      this.resetForm.enable();
+      this.submitForm.enable();
       this.error = ex?.message ? ex?.message.toString() : ex?.toString();
       this.isProcessing = false;
       this.loaderService.hide();

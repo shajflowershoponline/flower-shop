@@ -13,10 +13,16 @@
           <div class="single-input-item mb-3">
             <label for="display-name" class="required mb-1">Display Name</label>
             <input formControlName="name" type="text" id="display-name" placeholder="Display Name" />
+            <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+              <small class="text-danger">Please enter your name</small>
+            </div>
           </div>
           <div class="single-input-item mb-3">
             <label for="email" class="required mb-1">Email Addres</label>
             <input formControlName="email" type="email" id="email" placeholder="Email Address" />
+            <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+              <small class="text-danger">Please enter a valid email address</small>
+            </div>
           </div>
           <div class="single-input-item mb-3">
             <label for="mobileNumber" class="required mb-1">Mobile number</label>
@@ -30,7 +36,7 @@
           </div>
           <div class="single-input-item single-item-button">
             <button class="btn flosun-button secondary-btn theme-color rounded-0"
-              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine">Save Changes</button>
+              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine || isProcessing">Save Changes</button>
           </div>
         </fieldset>
       </form>

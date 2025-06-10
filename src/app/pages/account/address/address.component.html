@@ -28,7 +28,7 @@
           </div>
           <div class="single-input-item single-item-button">
             <button class="btn flosun-button secondary-btn theme-color rounded-0"
-              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine">Save Changes</button>
+              [disabled]="(!form.dirty && !form.touched) || !form.valid || form.pristine || isProcessing">Save Changes</button>
           </div>
         </fieldset>
       </form>

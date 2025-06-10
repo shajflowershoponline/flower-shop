@@ -124,52 +124,74 @@ export class CheckoutComponent {
 
   ngOnInit(): void {
     // Initialization logic can go here
-
     this.getItems();
     this.calculateDeliveryFee();
   }
 
   getItems() {
-    this.cartService.getItems(this.currentUser.customerUserId).subscribe((res) => {
-      // handle next value here
-      if (res.success) {
-        console.log('Cart items:', res.data);
-        this.cartItems = res.data.results.map(item => {
-          item.quantity = Number(item.quantity ?? 0);
-          item.product.price = Number(item.product?.price ?? 0);
-          item.product.discountPrice = Number(item.product?.discountPrice ?? 0);
-          item.total = Number(item.quantity ?? 0) * Number(item.product?.price ?? 0);
-          return item;
+    this.loaderService.show();
+    this.form.disable();
+    try {
+      this.cartService.getItems(this.currentUser.customerUserId).subscribe((res) => {
+        // handle next value here
+        this.loaderService.hide();
+        this.form.enable();
+        if (res.success) {
+          console.log('Cart items:', res.data);
+          this.cartItems = res.data.results.map(item => {
+            item.quantity = Number(item.quantity ?? 0);
+            item.product.price = Number(item.product?.price ?? 0);
+            item.product.discountPrice = Number(item.product?.discountPrice ?? 0);
+            item.total = Number(item.quantity ?? 0) * Number(item.product?.price ?? 0);
+            return item;
+          }
+          );
+          this.cartService.setCartCount(this.cartItems.length);
+          this.currentDiscount = res.data?.activeCoupon?.discount;
+          this.promoCode = this.currentDiscount.promoCode;
+        } else {
+          console.error('No cart items found');
         }
-        );
-        this.cartService.setCartCount(this.cartItems.length);
-        this.currentDiscount = res.data?.activeCoupon?.discount;
-        this.promoCode = this.currentDiscount.promoCode;
-      } else {
-        console.error('No cart items found');
-      }
-    },
-      (error) => {
-        // handle error here
-        console.error('Error fetching cart items:', error);
-      }
-    );
+      },
+        (error) => {
+          this.form.enable();
+          // handle error here
+          console.error('Error fetching cart items:', error);
+        }
+      );
+    } catch (ex) {
+      this.form.enable();
+    }
   }
 
   calculateDeliveryFee() {
-
     if (this.form?.value?.deliveryAddressCoordinates && this.form?.value?.deliveryAddressCoordinates?.lat && this.form?.value?.deliveryAddressCoordinates?.lng) {
-      this.deliveryService.calculate({
-        pickupCoords: this.STORE_LOCATION_COORDINATES,
-        dropoffCoords: {
-          lat: this.form?.value?.deliveryAddressCoordinates ? Number(this.form?.value?.deliveryAddressCoordinates?.lat ?? 0) : 0,
-          lng: this.form?.value?.deliveryAddressCoordinates ? Number(this.form?.value?.deliveryAddressCoordinates?.lng ?? 0) : 0,
-        }
-      }).subscribe(res => {
-        if (res.success) {
-          this.deliveryFee = res.data.deliveryFee;
-        }
-      })
+      this.loaderService.show();
+      this.form.disable();
+      try {
+        this.deliveryService.calculate({
+          pickupCoords: this.STORE_LOCATION_COORDINATES,
+          dropoffCoords: {
+            lat: this.form?.value?.deliveryAddressCoordinates ? Number(this.form?.value?.deliveryAddressCoordinates?.lat ?? 0) : 0,
+            lng: this.form?.value?.deliveryAddressCoordinates ? Number(this.form?.value?.deliveryAddressCoordinates?.lng ?? 0) : 0,
+          }
+        }).subscribe(res => {
+          this.loaderService.hide();
+          this.form.enable();
+          if (res.success) {
+            this.deliveryFee = res.data.deliveryFee;
+          }
+        }, () => {
+      this.form.enable();
+          this.loaderService.hide();
+        })
+      } catch (ex) {
+      this.form.enable();
+        this.loaderService.hide();
+      }
+    } else {
+      this.form.enable();
+      this.loaderService.hide();
     }
   }
 

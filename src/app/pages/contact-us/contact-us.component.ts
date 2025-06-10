@@ -58,12 +58,14 @@ export class ContactUsComponent {
         description: "Are you sure you want to send your message to our support team?",
         confirmText: "Submit",
         confirm: () => {
+          this.form.disable();
           this.modalService.close(MODAL_TYPE.PROMPT);
           this.isProcessing = true;
           this.loaderService.show();
           this.emailService.sendEmailFromContact(this.form.value).subscribe(res => {
             this.isProcessing = false;
             this.loaderService.hide();
+            this.form.enable();
             if (res.success) {
               this.form.reset();
               this.modalService.openResultModal({
@@ -86,6 +88,7 @@ export class ContactUsComponent {
               });
             }
           }, (res) => {
+            this.form.enable();
             this.isProcessing = false;
             this.loaderService.hide();
             this.error = "Failed to send your message. Please try again later.";
@@ -103,6 +106,7 @@ export class ContactUsComponent {
         }
       });
     } catch (ex) {
+      this.form.enable();
       this.isProcessing = false;
       this.loaderService.hide();
       this.error = "Failed to send your message. Please try again later.";

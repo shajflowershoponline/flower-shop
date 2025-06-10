@@ -1,10 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CartItemComponent } from '../cart-item/cart-item.component';
 import { CommonModule } from '@angular/common';
 import { CartService } from 'src/app/services/cart.service';
 import { AiSearchService } from 'src/app/services/ai-search.service';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { catchError, debounceTime, filter, map, of, Subject, switchMap } from 'rxjs';
+import { catchError, debounceTime, filter, finalize, map, of, Subject, switchMap, tap } from 'rxjs';
 import { ProductService } from 'src/app/services/product.service';
 import { CustomerUser } from 'src/app/model/customer-user';
 import { StorageService } from 'src/app/services/storage.service';
@@ -30,6 +30,8 @@ export class HeaderComponent {
   animateCartCount = false;
   private autoCompleteSearchSubject = new Subject<string>();
   autoCompleteResults: any[] = [];
+  autoCompleteLoading = false;
+  @ViewChild('searchBarWrap') searchBarWrap!: ElementRef;
   constructor(
     private readonly cartService: CartService,
     private readonly aiSearchService: AiSearchService,
@@ -71,6 +73,17 @@ export class HeaderComponent {
     })
   }
 
+  // Close dropdown when click outside
+  @HostListener('document:click', ['$event.target'])
+  public onClick(targetElement: HTMLElement): void {
+    const clickedInside = this.searchBarWrap?.nativeElement.contains(targetElement);
+    if (!clickedInside) {
+      this.autoCompleteResults = []; // hide dropdown
+    } else if(this.searchKeyword && this.searchKeyword !== "" && targetElement.tagName.toLowerCase().includes("textarea")) {
+      this.autoCompleteSearchSubject.next(this.searchKeyword);
+    }
+  }
+
   get isShopPage() {
     const currentUrl = this.router?.url ?? "";
     return currentUrl.startsWith("/ai-search") || currentUrl.startsWith('/search') || currentUrl.startsWith('/categories') || currentUrl.startsWith('/collections');
@@ -99,11 +112,15 @@ export class HeaderComponent {
       this.triggerCartAnimation();
     });
 
-
     this.autoCompleteSearchSubject.pipe(
-      debounceTime(500),
-      switchMap(text => this.getAutoCompleteResults(text))
-    ).subscribe(results => this.autoCompleteResults = results);
+      tap(() => this.autoCompleteLoading = true), // Start loading
+      switchMap(text => this.getAutoCompleteResults(text).pipe(
+        finalize(() => this.autoCompleteLoading = false) // End loading regardless of success or error
+      ))
+    ).subscribe(results => {
+      this.autoCompleteResults = results;
+    });
+
   }
 
   getAutoCompleteResults(query) {
@@ -195,8 +212,10 @@ export class HeaderComponent {
     textarea.style.height = 'auto'; // reset first
     textarea.style.height = `${textarea.scrollHeight}px`; // then set new height
 
-    if(this.searchType === "KEYWORD") {
+    if(this.searchType === "KEYWORD" && this.searchKeyword && this.searchKeyword !== "") {
       this.autoCompleteSearchSubject.next(this.searchKeyword);
+    } else {
+      this.autoCompleteResults = [];
     }
   }
 

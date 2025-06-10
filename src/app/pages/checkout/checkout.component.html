@@ -55,6 +55,9 @@
                 <div class="checkout-form-list">
                   <label>Name <span class="required">*</span></label>
                   <input formControlName="name" placeholder="" type="text">
+                  <div *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+                    <small class="text-danger">Please enter your name</small>
+                  </div>
                 </div>
               </div>
               <div class="col-md-12 col-custom">
@@ -77,12 +80,18 @@
                 <div class="checkout-form-list">
                   <input formControlName="deliveryAddressLandmark" placeholder="Apartment, suite, unit etc. (optional)"
                     type="text">
+                  <div *ngIf="form.get('deliveryAddressLandmark')?.invalid">
+                    <small class="text-danger">Please enter an address or landmark</small>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6 col-custom">
                 <div class="checkout-form-list">
                   <label>Email Address <span class="required">*</span></label>
                   <input formControlName="email" placeholder="" type="email">
+                  <div *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+                    <small class="text-danger">Please enter a valid email address</small>
+                  </div>
                 </div>
               </div>
               <div class="col-md-6 col-custom">
@@ -178,7 +187,7 @@
               </div>
 
               <div class="order-button-payment mt-4">
-                <button [disabled]="subTotal === 0 || !currentUser.addressCoordinates || deliveryFee === 0 || (promoCode !== currentDiscount.promoCode)" class="btn flosun-button secondary-btn black-color rounded-0 w-100" (click)="onSubmit()">Place
+                <button [disabled]="subTotal === 0 || !currentUser.addressCoordinates || deliveryFee === 0 || (promoCode !== currentDiscount.promoCode) || form.invalid" class="btn flosun-button secondary-btn black-color rounded-0 w-100" (click)="onSubmit()">Place
                   Order</button>
               </div>
             </div>

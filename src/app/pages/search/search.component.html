@@ -53,8 +53,8 @@
                   </a>
                   <span *ngIf="item.isSale" class="onsale">Sale!</span>
                   <div class="add-action d-flex flex-column position-absolute">
-                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)">
-                      <i [class.active]="item.iAmInterested" class="lnr lnr-heart" data-toggle="tooltip"
+                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)" [class.active]="item.iAmInterested">
+                      <i class="lnr lnr-heart" data-toggle="tooltip"
                         data-placement="left" title="Wishlist"></i>
                     </a>
                     <a title="Quick View" (click)="onOpenQuickView(item)">
@@ -93,7 +93,7 @@
                     <a class="btn product-cart button-icon flosun-button dark-btn" data-toggle="tooltip"
                       (click)="onAddToCart(item)" data-placement="top" title="Add to Cart"> <span>Add to Cart</span>
                     </a>
-                    <a class="list-icon" title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                    <a class="list-icon" [class.active]="item.iAmInterested" title="Add To Wishlist" (click)="onAddToWishlist(item)">
                       <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="top" title="Wishlist"></i>
                     </a>
                   </div>

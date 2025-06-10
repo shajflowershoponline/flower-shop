@@ -41,9 +41,9 @@ export class AppComponent {
   }
   private setupTitleListener() {
     this.loaderService.data$.subscribe((res: { show: boolean }) => {
-      if (res.show) {
+      if (res.show && !this.showLoader) {
         this.showLoader = true;
-      } else {
+      } else if(this.showLoader) {
         this.showLoader = false;
       }
     });

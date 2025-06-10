@@ -73,12 +73,69 @@ export class SearchComponent {
       const collection = params.get('col');
       const color = params.get('color');
       const price = params.get('price');
-      this.productService.setSearch(searchQuery);
-      this.productService.setPageIndex(Number(pageIndex));
-      this.productService.setFilterCategory(category);
-      this.productService.setFilterCollection(collection);
-      this.productService.setFilterColor(color);
-      this.productService.setFilterPrice(price);
+
+      this.searchKeyword = searchQuery ?? "";
+      this.pageIndex = pageIndex && pageIndex !== "" && !isNaN(Number(pageIndex)) && Number(pageIndex) > 0 ? Number(pageIndex) - 1 : 0;
+      const categorys = category && category !== "" ? category.split(", ") : [];
+      if (categorys.length > 0) {
+        if (this.filter.some(x => x.apiNotation === 'category.categoryId')) {
+          this.filter.find(x => x.apiNotation === 'category.categoryId').filter = categorys;
+        } else {
+          this.filter.push({
+            apiNotation: "category.categoryId",
+            name: "category",
+            filter: categorys,
+            type: "in"
+          })
+        }
+      } else {
+        this.filter = this.filter.filter(x => x.apiNotation !== "category.categoryId");
+      }
+
+      const collections = collection && collection !== "" ? collection.split(", ") : [];
+      if (collections.length > 0) {
+        if (this.filter.some(x => x.apiNotation === 'collection.collectionId')) {
+          this.filter.find(x => x.apiNotation === 'collection.collectionId').filter = collections;
+        } else {
+          this.filter.push({
+            apiNotation: "collection.collectionId",
+            name: "collection",
+            filter: collections,
+            type: "in"
+          })
+        }
+      } else {
+        this.filter = this.filter.filter(x => x.apiNotation !== "collection.collectionId");
+      }
+
+      const colors = color && color !== "" ? color.split(", ") : [];
+      if (colors.length > 0) {
+        if (this.filter.some(x => x.apiNotation === 'color')) {
+          this.filter.find(x => x.apiNotation === 'color').filter = colors;
+        } else {
+          this.filter.push({
+            apiNotation: "color",
+            name: "color",
+            filter: colors,
+            type: "in"
+          })
+        }
+      } else {
+        this.filter = this.filter.filter(x => x.apiNotation !== "color");
+      }
+
+      const prices = price && price !== "" && price.split("-").length > 0 && price.split("-").some(x=> !isNaN(Number(x))) ? price : `${this.minPrice}-${this.maxPrice}`;
+      if (this.filter.some(x => x.apiNotation === 'price')) {
+        this.filter.find(x => x.apiNotation === 'price').filter = prices;
+      } else {
+        this.filter.push({
+          apiNotation: "price",
+          name: "price",
+          filter: price,
+          type: "number-range"
+        })
+      }
+      this.loadProducts();
       // You can now use `searchQuery` in your component
     });
     this.cartService.cartCount$.subscribe(res => {
@@ -88,10 +145,6 @@ export class SearchComponent {
     this.currentUser = this.storageService.getCurrentUser();
     this.productService.search$.subscribe(res => {
       this.searchKeyword = res ?? "";
-      this.loadProducts();
-    });
-    this.productService.pageIndex$.subscribe(res => {
-      this.pageIndex = res > 0 ? res - 1 : 0;
       this.loadProducts();
     });
     this.productService.filterCategory$.subscribe(res => {
@@ -227,7 +280,8 @@ export class SearchComponent {
         col: this.selectedCollection.length > 0 ? this.selectedCollection.join(", ") : null,
         price: `${this.selectedMin??this.minPrice}-${this.selectedMax??this.maxPrice}`,
         color: this.selectedColor.length > 0 ? this.selectedColor.join(", ") : null
-      }
+      },
+      replaceUrl: true,
     });
   }
 
@@ -299,8 +353,10 @@ export class SearchComponent {
           currentFilter = currentFilter.filter(x => x !== value);
         } else if (isNew && value && value !== "") {
           currentFilter.push(value);
-        } else {
+        } else if(!isNew && value) {
           currentFilter = currentFilter.filter(x => x !== value);
+        } else {
+          currentFilter = [];
         }
         this.router.navigate(['/search'], {
           queryParams: {
@@ -329,8 +385,10 @@ export class SearchComponent {
           currentFilter = currentFilter.filter(x => x !== value);
         } else if (isNew && value && value !== "") {
           currentFilter.push(value);
-        } else {
+        } else if(!isNew && value) {
           currentFilter = currentFilter.filter(x => x !== value);
+        } else {
+          currentFilter = [];
         }
         this.router.navigate(['/search'], {
           queryParams: {
@@ -359,8 +417,10 @@ export class SearchComponent {
           currentFilter = currentFilter.filter(x => x !== value);
         } else if (isNew && value && value !== "") {
           currentFilter.push(value);
-        } else {
+        } else if(!isNew && value) {
           currentFilter = currentFilter.filter(x => x !== value);
+        } else {
+          currentFilter = [];
         }
         this.router.navigate(['/search'], {
           queryParams: {

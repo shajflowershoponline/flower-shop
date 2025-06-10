@@ -101,6 +101,7 @@ export class AddressComponent implements OnInit {
 
   async onSaveChanges() {
     try{
+      this.form.disable();
       this.isProcessing = true;
       const params = this.form.value;
       this.loaderService.show();
@@ -114,6 +115,7 @@ export class AddressComponent implements OnInit {
           this.isProcessing = false;
           this.loaderService.hide();
           this.error = null;
+          this.form.enable();
           if (res.success) {
             this.modalService.openResultModal({
               success: true,
@@ -143,6 +145,7 @@ export class AddressComponent implements OnInit {
             });
           }
         }, async (res) => {
+          this.form.enable();
           this.error = null;
           this.isProcessing = false;
           this.loaderService.hide();
@@ -159,6 +162,7 @@ export class AddressComponent implements OnInit {
           });
         });
     } catch (e){
+        this.form.enable();
         this.error = null;
         this.isProcessing = false;
         this.loaderService.hide();
