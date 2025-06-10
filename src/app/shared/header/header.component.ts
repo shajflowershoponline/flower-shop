@@ -39,6 +39,10 @@ export class HeaderComponent {
     private readonly storageService: StorageService,
     private router: Router, private route: ActivatedRoute
   ) {
+    this.route.queryParamMap.subscribe(params => {
+      const searchKeyword = params.get('q');
+      this.searchKeyword = searchKeyword ?? "";
+    });
     this.currentUser = this.storageService.getCurrentUser();
     this.aiSearchService.init();
     this.aiSearchService.prompts$.subscribe(prompts => {
@@ -113,6 +117,7 @@ export class HeaderComponent {
     });
 
     this.autoCompleteSearchSubject.pipe(
+      debounceTime(500),
       tap(() => this.autoCompleteLoading = true), // Start loading
       switchMap(text => this.getAutoCompleteResults(text).pipe(
         finalize(() => this.autoCompleteLoading = false) // End loading regardless of success or error
@@ -219,6 +224,17 @@ export class HeaderComponent {
     }
   }
 
+  onAutoCompleteSeleced(searchKey: string = "") {
+    if(!(this.router?.url ?? "").includes("search")) {
+      this.searchKeyword = searchKey;
+      this.router.navigate(['/search'], {
+        queryParams: { q: searchKey && searchKey !== "" ? searchKey : null },
+      });
+    } else {
+      this.searchKeyword = searchKey;
+      this.productService.setSearch(searchKey);
+    }
+  }
 
   submitSearch() {
     const trimmed = this.searchKeyword.trim();
