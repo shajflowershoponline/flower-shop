@@ -13,10 +13,15 @@ export class AccountComponent {
   tab: "Account" | "My Orders" | "Change Password" = "Account";
   constructor(
     private cdr: ChangeDetectorRef,
-    private titleService:Title, 
-    private storageService:StorageService, 
+    private titleService:Title,
+    private storageService:StorageService,
     private authService:AuthService) {
 
+  }
+
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
   }
 
   async logOut() {

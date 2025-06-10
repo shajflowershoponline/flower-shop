@@ -3,7 +3,7 @@
 <div class="intro11-slider-wrap section">
   <div class="intro11-slider swiper-container">
     <div class="swiper-wrapper">
-      <div class="intro11-section swiper-slide slide-bg-1 bg-position" [ngStyle]="slider1Styles">
+      <div class="intro11-section swiper-slide slide-bg-1 bg-position overlay-glass" [ngStyle]="slider1Styles">
         <!-- Intro Content Start -->
         <div class="intro11-content text-left">
           <h2 class="title">{{slideConfig ? slideConfig[1]?.title : 'Welcome to SHAJFlowershop'}}</h2>
@@ -12,27 +12,26 @@
             "Explore our beautiful collection of fresh flowers. Whether it's for a special occasion or just to brighten your day, we deliver blooms with love and care."
             }}
           </p>
-          <a class="btn flosun-button secondary-btn theme-color rounded-0" routerLink="/search">Sign in & Start Shopping</a>
+          <a class="btn flosun-button secondary-btn theme-color rounded-0" routerLink="/search">{{!isAuthenticated ? 'Sign in & ' : ''}}Start Shopping</a>
         </div>
 
         <!-- Intro Content End -->
       </div>
-      <div class="intro11-section swiper-slide slide-bg-1 bg-position" [ngStyle]="slider2Styles">
+      <div class="intro11-section swiper-slide slide-bg-1 bg-position  overlay-glass" [ngStyle]="slider2Styles">
         <!-- Intro Content Start -->
         <div class="intro11-content text-left">
-          <h3 class="title-slider black-slider-title text-uppercase">Collection</h3>
           <h2 class="title">{{slideConfig ? slideConfig[2]?.title : 'Elegant Gift Arrangements'}}</h2>
           <p class="desc-content">{{slideConfig ? slideConfig[2]?.description :
           'Discover our handpicked selections designed to add beauty and warmth to any moment. Perfect for gifting or simply brightening your space.'}}</p>
-          <a class="btn flosun-button secondary-btn rounded-0" routerLink="/search">Sign in & Start Shopping</a>
+          <a class="btn flosun-button secondary-btn rounded-0" routerLink="/search">{{!isAuthenticated ? 'Sign in & ' : ''}}Start Shopping</a>
         </div>
 
         <!-- Intro Content End -->
       </div>
     </div>
     <!-- Slider Navigation -->
-    <div class="home1-slider-prev swiper-button-prev main-slider-nav"><i class="lnr lnr-arrow-left"></i></div>
-    <div class="home1-slider-next swiper-button-next main-slider-nav"><i class="lnr lnr-arrow-right"></i></div>
+    <div class="home1-slider-prev swiper-button-prev main-slider-nav intro11-prev" (click)="slidePrev()"><i class="lnr lnr-arrow-left"></i></div>
+    <div class="home1-slider-next swiper-button-next main-slider-nav intro11-next" (click)="slideNext()"><i class="lnr lnr-arrow-right"></i></div>
     <!-- Slider pagination -->
     <div class="swiper-pagination"></div>
   </div>

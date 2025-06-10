@@ -3,3 +3,8 @@
 .product-area .single-product .add-action a i.active {
   background-color: #E72463;
 }
+
+.product-area .single-product.not-allowed:hover .product-content .price-box {
+  opacity: 1!important;
+  visibility: visible!important;
+}

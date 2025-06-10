@@ -1,0 +1,32 @@
+
+.overlay-glass {
+  &::after {
+    content: "";
+    display: flex;
+    /* Dark semi-transparent layer */
+    backdrop-filter: blur(3px);
+    /* Glass effect */
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+    position: absolute;
+    z-index: -1;
+    height: 100%!important;
+    width: 100%!important;
+    top: 0;
+    left: 0;
+  }
+}
+
+.intro11-content .title,
+.intro11-content .desc-content {
+  color: #000000 !important;
+}
+
+
+.title {
+  text-shadow: 0 0 20px rgb(255, 255, 255);
+}
+
+.desc-content {
+  text-shadow: 0 0 4px rgb(255 255 255);
+}

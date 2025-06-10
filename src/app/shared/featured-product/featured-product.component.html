@@ -20,7 +20,7 @@
             @for (item of products; track item.sku) {
             <div class="single-item swiper-slide">
               <!--Single Product Start-->
-              <div class="single-product position-relative mb-30">
+              <div class="single-product position-relative mb-30" [ngClass]="{ 'not-allowed': !isAuthenticated }">
                 <div class="product-image">
                   <a routerLink="/product/{{item?.sku}}" class="d-block">
                     <div *ngFor="let image of item.productImages | slice:0:2; let i = index">
@@ -30,7 +30,7 @@
                     </div>
                   </a>
                   <span *ngIf="item.isSale" class="onsale">Sale!</span>
-                  <div class="add-action d-flex flex-column position-absolute">
+                  <div *ngIf="isAuthenticated" class="add-action d-flex flex-column position-absolute">
                     <a title="Add To Wishlist" (click)="onAddToWishlist(item)">
                       <i [class.active]="item.iAmInterested" class="lnr lnr-heart" data-toggle="tooltip"
                         data-placement="left" title="Wishlist"></i>
@@ -51,16 +51,12 @@
                     <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
                     <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
                   </div>
-                  <a class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
+                  <a *ngIf="isAuthenticated" class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
                 </div>
               </div>
               <!--Single Product End-->
             </div>
             }
-            } @else if(!isLoading) {
-
-            } @else {
-
             }
           </div>
           <!-- Slider pagination -->

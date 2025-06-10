@@ -1,17 +1,19 @@
+import { CustomerUser } from 'src/app/model/customer-user';
 import { SystemConfigService } from './../../services/system-config.service';
 import { Component } from '@angular/core';
 import { OneSignalService } from 'src/app/services/one-signal.service';
+import { StorageService } from 'src/app/services/storage.service';
 import Swiper from 'swiper';
 // Install modules
 @Component({
   selector: 'app-home',
+  standalone: false,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
+  currentUser: CustomerUser;
   intro11Slider: Swiper;
-  productSlider: Swiper;
-  itemCarousel2: Swiper;
   testimonialCarousel: Swiper;
   slideConfig: {
     1: {
@@ -25,9 +27,17 @@ export class HomeComponent {
       image: string;
     }
   };
-  constructor(private readonly systemConfigService: SystemConfigService) {
-
+  constructor(
+    private readonly systemConfigService: SystemConfigService,
+    private readonly storageService: StorageService,
+  ) {
+    this.currentUser = this.storageService.getCurrentUser();
   }
+
+  get isAuthenticated() {
+    return this.currentUser && this.currentUser?.customerUserCode;
+  }
+
   get slider1Styles() {
     return {
       'background-image': `url("${this.slideConfig?.[1]?.image && this.slideConfig?.[1]?.image !== '' ? this.slideConfig?.[1]?.image : '../../../assets/images/slider/1-1.jpg'}")`,
@@ -58,100 +68,30 @@ export class HomeComponent {
       spaceBetween: 10,
       effect: 'fade',
       navigation: {
-        nextEl: '.home1-slider-next',
-        prevEl: '.home1-slider-prev',
+        nextEl: '.intro11-next',
+        prevEl: '.intro11-prev',
       },
       pagination: {
         el: '.swiper-pagination',
         type: 'bullets',
-        clickable: true,  // Corrected to boolean
-      },
-      // autoplay: {},
-    });
-
-    // Product Carousel
-    this.productSlider = new Swiper('.product-slider', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      pagination: {
-        el: ".swiper-pagination",
-        type: 'bullets',
         clickable: true,
       },
-      //autoplay: {},
-      // Responsive breakpoints
-      breakpoints: {
-        // when window width is >= 320px
-        320: {
-          slidesPerView: 1,
-          spaceBetween: 10
-        },
-        // when window width is >= 480px
-        480: {
-          slidesPerView: 2,
-          spaceBetween: 10
-        },
-        // when window width is >= 767px
-        768: {
-          slidesPerView: 3,
-          spaceBetween: 10
-        },
-        // when window width is >= 1200px
-        1200: {
-          slidesPerView: 4,
-          spaceBetween: 10
-        },
-      }
+      observer: true,
+      observeParents: true,
     });
 
-    // item Carousel 2
-    this.itemCarousel2 = new Swiper('.item-carousel-2', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      pagination: {
-        el: ".swiper-pagination",
-        type: 'bullets',
-        clickable: true,
-      },
-      //autoplay: {},
-      // Responsive breakpoints
-      breakpoints: {
-        // when window width is >= 480px
-        480: {
-          slidesPerView: 1,
-        },
-        // when window width is >= 575px
-        575: {
-          slidesPerView: 2,
-        },
-        // when window width is >= 767px
-        767: {
-          slidesPerView: 2,
-        },
-        // when window width is >= 991px
-        991: {
-          slidesPerView: 2,
-        },
-        // when window width is >= 1200px
-        1200: {
-          slidesPerView: 3,
-        },
-      }
-    });
-
-    // Testimonial Carousel
-    this.testimonialCarousel = new Swiper('.testimonial-carousel', {
-      loop: true,
-      speed: 800,
-      slidesPerView: 1,
-      spaceBetween: 10,
-      effect: 'slide',
-      navigation: {
-        nextEl: '.home1-slider-next',
-        prevEl: '.home1-slider-prev',
-      },
-      //autoplay: {},
-
-    });
   }
+
+  slideNext() {
+    if (this.intro11Slider) {
+      this.intro11Slider.slideNext();
+    }
+  }
+
+  slidePrev() {
+    if (this.intro11Slider) {
+      this.intro11Slider.slidePrev();
+    }
+  }
+
 }

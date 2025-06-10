@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AboutUsComponent } from './about-us.component';
 import { RouterModule } from '@angular/router';
 import { HistoryComponent } from './history/history.component';
+import { FeaturedProductComponent } from 'src/app/shared/featured-product/featured-product.component';
 
 
 
@@ -12,6 +13,7 @@ import { HistoryComponent } from './history/history.component';
   ],
   imports: [
     CommonModule,
+    FeaturedProductComponent,
     HistoryComponent,
     RouterModule.forChild([
       { path: '', component: AboutUsComponent }

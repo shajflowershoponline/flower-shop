@@ -7,11 +7,12 @@ import { ProductCollectionService } from 'src/app/services/product-collection.se
 import { ProductService } from 'src/app/services/product.service';
 import { QuickProductViewModalComponent } from '../quick-product-view-modal/quick-product-view-modal.component';
 import { StorageService } from 'src/app/services/storage.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from 'src/app/services/cart.service';
 import { ModalService, MODAL_TYPE } from 'src/app/services/modal.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerUserWishlistService } from 'src/app/services/customer-user-wish-list.service';
+import Swiper from 'swiper';
 
 @Component({
   selector: 'app-featured-product',
@@ -19,13 +20,15 @@ import { CustomerUserWishlistService } from 'src/app/services/customer-user-wish
   imports: [
     CommonModule,
     FormsModule,
-    QuickProductViewModalComponent
+    QuickProductViewModalComponent,
+    RouterModule
   ],
   templateUrl: './featured-product.component.html',
   styleUrl: './featured-product.component.scss'
 })
 export class FeaturedProductComponent {
   currentUser: CustomerUser;
+  productSlider: Swiper;
   products: Product[] = [];
   error: string;
   cartCount = 0;
@@ -43,8 +46,52 @@ export class FeaturedProductComponent {
     this.currentUser = this.storageService.getCurrentUser();
   }
 
+  get isAuthenticated() {
+    return this.currentUser && this.currentUser?.customerUserCode;
+  }
+
   ngOnInit(): void {
     this.loadProducts();
+  }
+
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+
+    // Product Carousel
+    this.productSlider = new Swiper('.product-slider', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: ".swiper-pagination",
+        type: 'bullets',
+        clickable: true,
+      },
+      //autoplay: {},
+      // Responsive breakpoints
+      breakpoints: {
+        // when window width is >= 320px
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 10
+        },
+        // when window width is >= 480px
+        480: {
+          slidesPerView: 2,
+          spaceBetween: 10
+        },
+        // when window width is >= 767px
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 10
+        },
+        // when window width is >= 1200px
+        1200: {
+          slidesPerView: 4,
+          spaceBetween: 10
+        },
+      }
+    });
   }
 
   loadProducts() {
@@ -52,7 +99,7 @@ export class FeaturedProductComponent {
     //Add 'implements OnInit' to the class.
     this.isLoading = true;
     try {
-      this.productService.getAllFeaturedProducts(this.currentUser?.customerUserId).subscribe(res => {
+      this.productService.getAllFeaturedProducts(this.currentUser?.customerUserId??"0").subscribe(res => {
         this.products = res.data;
         this.isLoading = false;
       }, (res) => {

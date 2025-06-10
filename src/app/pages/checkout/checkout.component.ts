@@ -18,6 +18,7 @@ import { SystemConfigService } from 'src/app/services/system-config.service';
 
 @Component({
   selector: 'app-checkout',
+  standalone: false,
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.scss']
 })
@@ -126,6 +127,13 @@ export class CheckoutComponent {
     // Initialization logic can go here
     this.getItems();
     this.calculateDeliveryFee();
+  }
+
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   getItems() {

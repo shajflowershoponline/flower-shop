@@ -103,27 +103,7 @@
 	}
 	});
 
-	/*----------------------------------------
-		Swiper Slider Activation Js
-	------------------------------------------*/
-	// Home 01 Slider
-	var intro11Slider = new Swiper('.intro11-slider', {
-        loop: true,
-        speed: 400,
-		slidesPerView: 1,
-        spaceBetween: 10,
-		effect: 'fade',
-        navigation: {
-            nextEl: '.home1-slider-next',
-            prevEl: '.home1-slider-prev',
-		},
-		pagination: {
-			el: '.swiper-pagination',
-			type: 'bullets',
-			clickable: 'true',
-		},
-		//autoplay: {},
-	});
+
 	// Product Carousel
 	var intro11Slider = new Swiper('.product-slider', {
 		slidesPerView: 1,
