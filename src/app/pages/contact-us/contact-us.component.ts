@@ -65,6 +65,7 @@ export class ContactUsComponent {
             this.isProcessing = false;
             this.loaderService.hide();
             if (res.success) {
+              this.form.reset();
               this.modalService.openResultModal({
                 success: true,
                 header: "Message Sent!",
