@@ -1,81 +1,154 @@
-<!-- AI Search Convo Page (Product Grid like Alibaba style) -->
-<section class="ai-search-results section pt-100 pb-100">
-  <div class="container">
-    <div class="row mb-5">
-      <div class="col-12 text-center">
-        <h2 class="fw-bold mb-2" style="color: #b82c47;">Search Results for:</h2>
-        <h5 class="fw-semibold text-muted">"What’s your best flower for a girl's birthday"</h5>
-        <p class="mt-2 text-muted">Found <strong>20 products</strong> and <strong>3 categories</strong></p>
-      </div>
-    </div>
-
-    <!-- Filters and Badges -->
-    <div class="row mb-4">
-      <div class="col-12 d-flex flex-wrap gap-2 justify-content-center">
-        <span class="badge bg-light border text-dark">Best Seller</span>
-        <span class="badge bg-light border text-dark">Birthday Recommended</span>
-        <span class="badge bg-light border text-dark">On Sale</span>
-        <span class="badge bg-light border text-dark">Popular for Girls</span>
-      </div>
-    </div>
-
-    <!-- Product Card Grid -->
-    <div class="row g-4">
-      <div class="col-md-4 col-sm-6">
-        <div class="card h-100 shadow-sm">
-          <img src="assets/images/products/rose-bouquet.jpg" class="card-img-top" alt="Rose Bouquet">
-          <div class="card-body">
-            <h6 class="fw-bold">Rose Bouquet Red (Small)</h6>
-            <p class="mb-1 text-danger">₱499 <span class="badge bg-danger">SALE</span></p>
-            <p class="text-muted small">Fresh red roses perfect for birthdays. Hand-wrapped and elegant for gifting.</p>
+<!-- Shop Main Area Start Here -->
+<div class="shop-main-area">
+  <div class="container container-default custom-area">
+    <div class="row flex-row-reverse">
+      <div class="col-12 col-custom mt-3" *ngIf="promptData && promptData !== ''">
+        <div class="row shop_wrapper">
+          <div style="display: flex;flex-direction: row;gap: 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M0.296443 7.55967L1.73504 6.96914C4.09862 5.99788 5.97727 4.12402 6.95187 1.76057L7.55513 0.296433C7.71833 -0.098811 8.27845 -0.098811 8.44005 0.296433L9.03852 1.74937C10.0115 4.11282 11.887 5.98828 14.2505 6.96114L15.7035 7.55967C16.0988 7.72287 16.0988 8.28293 15.7035 8.44453L14.2393 9.04779C11.8774 10.0223 10.0019 11.9009 9.03052 14.2644L8.44005 15.703C8.27685 16.0982 7.71673 16.0998 7.55353 15.703L6.95346 14.2468C5.98047 11.8833 4.10342 10.0079 1.73984 9.03659L0.296443 8.44293C-0.0988143 8.27973 -0.0988143 7.71967 0.296443 7.55647V7.55967Z"
+                fill="#5341E3" data-spm-anchor-id="a2700.buyeragent_factory.0.i15.268069ffmaOLkG"></path>
+            </svg>
+            <h4>Search results for "{{promptData}}"</h4>
           </div>
         </div>
       </div>
+      <div class="col-12 col-custom mt-3">
+        <!--shop toolbar end-->
+        <!-- Shop Wrapper Start -->
+        <div class="row shop_wrapper grid_3" [ngClass]="{ 'start': !promptData || promptData === ''}" >
 
-      <div class="col-md-4 col-sm-6">
-        <div class="card h-100 shadow-sm">
-          <img src="assets/images/products/tulips.jpg" class="card-img-top" alt="Tulips">
-          <div class="card-body">
-            <h6 class="fw-bold">Tulips (Small)</h6>
-            <p class="mb-1 text-warning">₱389 <span class="badge bg-warning">Limited Offer</span></p>
-            <p class="text-muted small">Colorful tulips with charm and fragrance, ideal for a birthday bouquet.</p>
+          @if(!isLoading && products.length > 0) {
+            @for (item of products; track $index;) {
+            <div class="col-custom product-area col-lg-3 col-md-6 col-sm-6 animated-item" @fadeIn>
+              <div class="product-item">
+                <div class="single-product position-relative mr-0 ml-0">
+                  <div class="product-image">
+                    <a routerLink="/product/{{item?.sku}}" class="d-block">
+                      <!-- <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                          <img [src]="image.file?.url" alt="" class="product-image-1 w-100" *ngIf="i === 0">
+                          <img [src]="image.file?.url" alt="" class="product-image-2 position-absolute w-100"
+                            *ngIf="i === 1">
+                        </div> -->
+                      <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                        <img [src]="image?.file?.url"
+                          [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
+                          alt="Image {{ i + 1 }}">
+                      </div>
+
+                    </a>
+                    <span *ngIf="item?.isSale" class="onsale">Sale!</span>
+                    <div class="add-action d-flex flex-column position-absolute">
+                      <a title="Add To Wishlist" (click)="onAddToWishlist(item)" [class.active]="item?.iAmInterested">
+                        <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="left" title="Wishlist"></i>
+                      </a>
+                      <a title="Quick View" (click)="onOpenQuickView(item)">
+                        <i class="lnr lnr-eye" data-toggle="tooltip" data-placement="left" title="Quick View"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="product-content">
+                    <div class="product-title">
+                      <h4 class="title-2"> <a routerLink="/product/{{item?.sku}}">{{item?.name}}</a></h4>
+                    </div>
+                    <div class="product-likes mb-3">
+                      <i class="fa fa-heart text-danger"></i> {{item?.interested}}
+                    </div>
+
+                    <div class="price-box">
+                      <span class="regular-price ">{{item?.discountPrice | currency: 'PHP'}}</span>
+                      <span class="old-price"><del>{{item?.price | currency: 'PHP'}}</del></span>
+                    </div>
+                    <a class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
+                  </div>
+                  <div class="product-content-listview">
+                    <div class="product-title">
+                      <h4 class="title-2"> <a>{{item?.name}}</a></h4>
+                    </div>
+                    <div class="product-likes mb-3">
+                      <i class="fa fa-heart text-danger"></i> {{item?.interested}}
+                    </div>
+
+                    <div class="price-box">
+                      <span class="regular-price ">{{item?.discountPrice | currency: 'PHP'}}</span>
+                      <span class="old-price"><del>{{item?.price | currency: 'PHP'}}</del></span>
+                    </div>
+                    <p class="desc-content">{{item?.shortDesc}}</p>
+                    <div class="button-listview">
+                      <a class="btn product-cart button-icon flosun-button dark-btn" data-toggle="tooltip"
+                        (click)="onAddToCart(item)" data-placement="top" title="Add to Cart"> <span>Add to Cart</span>
+                      </a>
+                      <a class="list-icon" [class.active]="item?.iAmInterested" title="Add To Wishlist"
+                        (click)="onAddToWishlist(item)">
+                        <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="top" title="Wishlist"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          }  @else if(isLoading) {
+
+          <div *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]" class="col-custom product-area col-lg-4 col-md-6 col-sm-6" >
+            <div class="product-item">
+              <div class="single-product position-relative mr-0 ml-0">
+                <div class="product-image">
+                  <a class="d-block">
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '100%' }"></ngx-skeleton-loader>
+                  </a>
+                </div>
+                <div class="product-content">
+                  <div class="product-title">
+                    <h4 class="title-2">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '50px' }"></ngx-skeleton-loader>
+                    </h4>
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </span>
+                    <span class="old-price"><del>
+                        <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                      </del></span>
+                  </div>
+                </div>
+                <div class="product-content-listview">
+                  <div class="product-title">
+                    <h4 class="title-2">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </h4>
+                  </div>
+                  <div class="product-likes mb-3">
+                    <i class="fa fa-heart text-danger"></i>
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                  </div>
+
+                  <div class="price-box">
+                    <span class="regular-price ">
+                      <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader>
+                    </span>
+                    <span class="old-price"><del>
+                        <ngx-skeleton-loader [theme]="{ width: '100%', height: '20px' }"></ngx-skeleton-loader></del>
+                    </span>
+                  </div>
+                  <p class="desc-content">
+                    <ngx-skeleton-loader [theme]="{ width: '100%', height: '40px' }"></ngx-skeleton-loader>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+          }
         </div>
-      </div>
+        <!-- Shop Wrapper End -->
+        <!-- Bottom Toolbar Start -->
 
-      <div class="col-md-4 col-sm-6">
-        <div class="card h-100 shadow-sm">
-          <img src="assets/images/products/sunflower.jpg" class="card-img-top" alt="Sunflower">
-          <div class="card-body">
-            <h6 class="fw-bold">Sunflower Bouquet (Small)</h6>
-            <p class="mb-1 text-dark">₱420</p>
-            <p class="text-muted small">Bright sunflowers to bring joy on birthdays. Uplifting and fun for girls.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4 col-sm-6">
-        <div class="card h-100 shadow-sm">
-          <img src="assets/images/products/white-rose.jpg" class="card-img-top" alt="White Rose">
-          <div class="card-body">
-            <h6 class="fw-bold">White Rose Big Bouquet</h6>
-            <p class="mb-1 text-dark">₱799</p>
-            <p class="text-muted small">Elegant white roses arranged in a full bouquet. Ideal for heartfelt birthdays.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Categories -->
-    <div class="row mt-5">
-      <div class="col-12">
-        <h5 class="fw-bold mb-3">Top Categories for Girl's Birthday Flowers</h5>
-        <div class="d-flex flex-wrap gap-3">
-          <a href="#" class="btn btn-outline-danger rounded-pill">Rose</a>
-          <a href="#" class="btn btn-outline-danger rounded-pill">Tulips</a>
-          <a href="#" class="btn btn-outline-danger rounded-pill">Sunflower</a>
-        </div>
+        <!-- Bottom Toolbar End -->
       </div>
     </div>
   </div>
-</section>
+</div>
+<app-quick-product-view-modal #quickView></app-quick-product-view-modal>

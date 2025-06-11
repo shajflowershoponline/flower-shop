@@ -82,6 +82,7 @@ export class ProductService implements IServices {
   }
 
   getSearchFilter(params:{
+    keyword?: any,
     columnDef?: { apiNotation: string; filter?: string }[],
   }): Observable<ApiResponse<{
       categories: Category[];

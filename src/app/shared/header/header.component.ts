@@ -24,13 +24,14 @@ export class HeaderComponent {
   searchPlaceholder = "Type something like: 'Find calming flower colors for a bedroom'...";
   searchType: "KEYWORD" | "AI" = "KEYWORD"
 
-  searchKeyword = null;
+  searchKeyword = "";
   pageIndex = 0;
   showSearchBar = false;
   animateCartCount = false;
   private autoCompleteSearchSubject = new Subject<string>();
   autoCompleteResults: any[] = [];
   autoCompleteLoading = false;
+  isAIResultFeeding = false;
   @ViewChild('searchBarWrap') searchBarWrap!: ElementRef;
   constructor(
     private readonly cartService: CartService,
@@ -49,6 +50,9 @@ export class HeaderComponent {
       this.promptPlaceholder = prompts;
       this.setRandomPrompt();
     });
+    this.aiSearchService.aiPrompt$.subscribe(prompts => {
+      this.searchKeyword = prompts ?? "";
+    });
     this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
@@ -64,6 +68,11 @@ export class HeaderComponent {
         } else {
           this.showSearchBar = true;
         }
+        if(url.includes("/ai-search")) {
+          this.searchType = "AI";
+        } else if(url.includes("/search")) {
+          this.searchType = "KEYWORD";
+        }
       });
     this.productService.search$.subscribe(res => {
       this.searchKeyword = res ?? "";
@@ -75,6 +84,10 @@ export class HeaderComponent {
     this.productService.searchResults$.subscribe(res=> {
       this.autoCompleteResults = [];
     })
+
+    this.aiSearchService.isAIResultFeeding$.subscribe(res=> {
+      this.isAIResultFeeding = res;
+    });
   }
 
   // Close dropdown when click outside
@@ -139,6 +152,7 @@ export class HeaderComponent {
   }
 
   setRandomPrompt() {
+    this.autoCompleteResults = [];
     const randomIndex = Math.floor(Math.random() * this.promptPlaceholder.length);
     this.searchPlaceholder = `💡 ${this.promptPlaceholder[randomIndex]}`;
   }
@@ -185,6 +199,7 @@ export class HeaderComponent {
         attributeFilter: ['class'],
       });
     }
+    this.aiSearchService.setAIPrompt(this.searchKeyword);
   }
 
   onSearchToggleClick() {
@@ -219,37 +234,46 @@ export class HeaderComponent {
 
     if(this.searchType === "KEYWORD" && this.searchKeyword && this.searchKeyword !== "") {
       this.autoCompleteSearchSubject.next(this.searchKeyword);
+    } else if(this.searchType === "AI" && this.searchKeyword && this.searchKeyword !== "") {
+      this.autoCompleteSearchSubject.next(this.searchKeyword);
     } else {
       this.autoCompleteResults = [];
+      this.isAIResultFeeding = false;
     }
   }
 
   onAutoCompleteSeleced(searchKey: string = "") {
-    if(!(this.router?.url ?? "").includes("search")) {
+    if(this.searchType === "KEYWORD" && (this.router?.url ?? "").includes("/search")) {
+      this.searchKeyword = searchKey;
+      this.productService.setSearch(searchKey);
+    } else if(this.searchType === "AI" &&  (this.router?.url ?? "").includes("/ai-search")) {
+      this.searchKeyword = searchKey;
+      this.aiSearchService.setAIPrompt(searchKey);
+    } else {
       this.searchKeyword = searchKey;
       this.router.navigate(['/search'], {
         queryParams: { q: searchKey && searchKey !== "" ? searchKey : null },
       });
-    } else {
-      this.searchKeyword = searchKey;
-      this.productService.setSearch(searchKey);
     }
+    this.autoCompleteResults = [];
   }
 
   submitSearch() {
     const trimmed = this.searchKeyword.trim();
-
-    if (this.searchType === "AI") {
-      // this.router.navigate([], {
-      //   queryParams: { q: trimmed },
-      //   queryParamsHandling: 'merge', // Keep other params if needed
-      // });
-    } else {
+    this.autoCompleteResults = [];
+    this.isAIResultFeeding = false;
+    if (this.searchType === "AI" && !this.isAIResultFeeding) {
+      this.router.navigate(['/ai-search'], {
+        queryParamsHandling: 'merge', // Keep other params if needed
+      }).then(()=> {
+        this.aiSearchService.setAIPrompt(trimmed);
+      });
+    } else if(this.searchType === "KEYWORD") {
       this.router.navigate(['/search'], {
         queryParams: { q: this.searchKeyword && this.searchKeyword !== "" ? this.searchKeyword : null },
       });
+      this.productService.setSearch(trimmed);
     }
-    this.productService.setSearch(trimmed);
     this.scrollToTopAndFocus();
   }
 

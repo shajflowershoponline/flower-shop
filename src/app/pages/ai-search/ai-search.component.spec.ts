@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AiSearchComponent } from './ai-search.component';
+import { AISearchComponent } from './ai-search.component';
 
-describe('AiSearchComponent', () => {
-  let component: AiSearchComponent;
-  let fixture: ComponentFixture<AiSearchComponent>;
+describe('AISearchComponent', () => {
+  let component: AISearchComponent;
+  let fixture: ComponentFixture<AISearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AiSearchComponent]
+      imports: [AISearchComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AiSearchComponent);
+    fixture = TestBed.createComponent(AISearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -44,16 +44,16 @@
                         <img [src]="image.file?.url" alt="" class="product-image-2 position-absolute w-100"
                           *ngIf="i === 1">
                       </div> -->
-                    <div *ngFor="let image of item.productImages | slice:0:2; let i = index">
-                      <img [src]="image.file.url"
+                    <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                      <img [src]="image?.file.url"
                         [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
                         alt="Image {{ i + 1 }}">
                     </div>
 
                   </a>
-                  <span *ngIf="item.isSale" class="onsale">Sale!</span>
+                  <span *ngIf="item?.isSale" class="onsale">Sale!</span>
                   <div class="add-action d-flex flex-column position-absolute">
-                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)" [class.active]="item.iAmInterested">
+                    <a title="Add To Wishlist" (click)="onAddToWishlist(item)" [class.active]="item?.iAmInterested">
                       <i class="lnr lnr-heart" data-toggle="tooltip"
                         data-placement="left" title="Wishlist"></i>
                     </a>
@@ -64,10 +64,10 @@
                 </div>
                 <div class="product-content">
                   <div class="product-title">
-                    <h4 class="title-2"> <a routerLink="/product/{{item?.sku}}">{{item.name}}</a></h4>
+                    <h4 class="title-2"> <a routerLink="/product/{{item?.sku}}">{{item?.name}}</a></h4>
                   </div>
                   <div class="product-likes mb-3">
-                    <i class="fa fa-heart text-danger"></i> {{item.interested}}
+                    <i class="fa fa-heart text-danger"></i> {{item?.interested}}
                   </div>
 
                   <div class="price-box">
@@ -78,22 +78,22 @@
                 </div>
                 <div class="product-content-listview">
                   <div class="product-title">
-                    <h4 class="title-2"> <a>{{item.name}}</a></h4>
+                    <h4 class="title-2"> <a>{{item?.name}}</a></h4>
                   </div>
                   <div class="product-likes mb-3">
-                    <i class="fa fa-heart text-danger"></i> {{item.interested}}
+                    <i class="fa fa-heart text-danger"></i> {{item?.interested}}
                   </div>
 
                   <div class="price-box">
-                    <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
-                    <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
+                    <span class="regular-price ">{{item?.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price"><del>{{item?.price | currency: 'PHP'}}</del></span>
                   </div>
-                  <p class="desc-content">{{item.shortDesc}}</p>
+                  <p class="desc-content">{{item?.shortDesc}}</p>
                   <div class="button-listview">
                     <a class="btn product-cart button-icon flosun-button dark-btn" data-toggle="tooltip"
                       (click)="onAddToCart(item)" data-placement="top" title="Add to Cart"> <span>Add to Cart</span>
                     </a>
-                    <a class="list-icon" [class.active]="item.iAmInterested" title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                    <a class="list-icon" [class.active]="item?.iAmInterested" title="Add To Wishlist" (click)="onAddToWishlist(item)">
                       <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="top" title="Wishlist"></i>
                     </a>
                   </div>

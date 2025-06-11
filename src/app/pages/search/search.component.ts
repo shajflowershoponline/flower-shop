@@ -66,6 +66,7 @@ export class SearchComponent {
     private router: Router,
     private route: ActivatedRoute,
     private readonly cartService: CartService) {
+      this.currentUser = this.storageService.getCurrentUser();
     this.route.queryParamMap.subscribe(params => {
       const searchQuery = params.get('q');
       const pageIndex = params.get('p');
@@ -142,7 +143,6 @@ export class SearchComponent {
       this.cartCount = res;
     });
 
-    this.currentUser = this.storageService.getCurrentUser();
     this.productService.search$.subscribe(res => {
       this.searchKeyword = res ?? "";
       this.loadProducts();
@@ -311,6 +311,7 @@ export class SearchComponent {
           pageSize: this.pageSize
         }),
         this.productService.getSearchFilter({
+          keyword: this.searchKeyword,
           columnDef: this.filter
         })
       ]

@@ -76,6 +76,9 @@ export const environment = {
     },
     autocompleteAI: {
       search: "/suggest/"
+    },
+    aiSearch: {
+      search: "/ai/search",
     }
   }
 };

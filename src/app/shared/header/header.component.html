@@ -24,7 +24,7 @@
               </a>
               <ul class="dropdown-submenu dropdown-hover">
                 <li><a routerLink="search" routerLinkActive="active">Search Flower</a></li>
-                <!-- <li><a routerLink="ai-search" routerLinkActive="active">AI Search</a></li> -->
+                <li><a routerLink="ai-search" routerLinkActive="active">AI Search</a></li>
                 <li><a routerLink="categories" routerLinkActive="active">Categories</a></li>
                 <li><a routerLink="collections" routerLinkActive="active">Collections</a></li>
               </ul>
@@ -79,14 +79,14 @@
 
       <!-- Filter Chips -->
       <div class="selected-filters d-flex flex-wrap justify-content-center gap-2 mb-3">
-        <div class="filter-chip" [ngClass]="{ 'selected': searchType === 'KEYWORD'}" (click)="searchType = 'KEYWORD'">
+        <div class="filter-chip" routerLink="/search" [ngClass]="{ 'selected': searchType === 'KEYWORD'}" (click)="searchType = 'KEYWORD'">
           Find products
         </div>
-        <!-- <div class="filter-chip" [ngClass]="{ 'selected': searchType === 'AI'}"
+        <div class="filter-chip" [ngClass]="{ 'selected': searchType === 'AI'}"
           (click)="setRandomPrompt();searchType = 'AI'">
           <i class="fa fa-wand-magic me-1"></i>
           Search with AI
-        </div> -->
+        </div>
       </div>
 
       <!-- Prompt Input -->
@@ -112,7 +112,7 @@
         </button>
 
         <!-- Submit Button (→) -->
-        <button [disabled]="!searchKeyword || searchKeyword?.trim() === ''" type="button"
+        <button [disabled]="!searchKeyword || searchKeyword?.trim() === '' || isAIResultFeeding" type="button"
           class="btn-submit position-absolute" (click)="submitSearch()">
           <i class="fa fa-arrow-right"></i>
         </button>

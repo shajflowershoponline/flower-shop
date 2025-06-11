@@ -1,0 +1,35 @@
+
+.tags li a.selected {
+  color: #E72463;
+  border-color: #E72463;
+}
+
+.product-area .single-product .add-action a i.active {
+  background-color: #E72463;
+}
+
+.product-area {
+  .single-product {
+    a {
+      &.active {
+        i {
+          color: #fff!important;
+          background-color: #E72463;
+        }
+      }
+    }
+
+  }
+
+}
+
+
+.shop_wrapper.start {
+  min-height: calc(50vh - 50%) !important;
+}
+
+
+.animated-item {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform;
+}
