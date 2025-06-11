@@ -93,7 +93,7 @@
       <div #searchBarWrap class="search-bar-wrap mx-auto position-relative" style="max-width: 800px;">
         <div *ngIf="autoCompleteLoading" class="spinner-border text-primary" role="status" style="position: absolute;right: 10px;top: 10px;">
         </div>
-        <textarea id="aiPrompt" [(ngModel)]="searchKeyword" (input)="autoResizeSearch($event)"
+        <textarea id="aiPrompt" [(ngModel)]="searchKeyword" (input)="autoResizeSearch($event)" (keydown.enter)="$event.preventDefault();submitSearch()"
           class="form-control shadow-sm"
           [placeholder]="searchType === 'KEYWORD' ? 'Search flower' : searchPlaceholder"></textarea>
 

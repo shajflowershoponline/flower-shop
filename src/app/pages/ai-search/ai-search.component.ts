@@ -2,7 +2,7 @@ import { AiSearchService } from './../../services/ai-search.service';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { Component, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'src/app/model/category';
 import { Collection } from 'src/app/model/collection';
 import { CustomerUser } from 'src/app/model/customer-user';
@@ -43,6 +43,7 @@ export class AISearchComponent {
   isLoading = false;
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private readonly customerUserWishlistService: CustomerUserWishlistService,
     private readonly aiSearchService: AiSearchService,
     private readonly storageService: StorageService,
@@ -65,6 +66,9 @@ export class AISearchComponent {
         this.aiSearchService.setIsAIResultFeeding(false);
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.aiSearchService.setAIPrompt("");
   }
 
   sendMessage() {
