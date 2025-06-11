@@ -642,5 +642,13 @@ export class SearchComponent {
       });
     }
   }
+
+  pictureErrorHandler(event) {
+    event.target.src = this.getDeafaultPicture();
+  }
+
+  getDeafaultPicture() {
+    return '../../../assets/images/thumbnail-product.png';
+  }
 }
 

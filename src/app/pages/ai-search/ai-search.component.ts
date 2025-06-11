@@ -271,4 +271,12 @@ export class AISearchComponent {
       });
     }
   }
+
+  pictureErrorHandler(event) {
+    event.target.src = this.getDeafaultPicture();
+  }
+
+  getDeafaultPicture() {
+    return '../../../assets/images/thumbnail-product.png';
+  }
 }

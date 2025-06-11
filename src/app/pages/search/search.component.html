@@ -44,18 +44,30 @@
                         <img [src]="image.file?.url" alt="" class="product-image-2 position-absolute w-100"
                           *ngIf="i === 1">
                       </div> -->
-                    <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
-                      <img [src]="image?.file.url"
-                        [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
-                        alt="Image {{ i + 1 }}">
-                    </div>
+
+                    <ng-container *ngIf="item?.productImages && item?.productImages.length > 0; else showDefaultImage">
+                      <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                        <img [src]="image?.file.url ?? getDeafaultPicture()" (error)="pictureErrorHandler($event)"
+                          [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
+                          alt="Image {{ i + 1 }}">
+                      </div>
+                    </ng-container>
+
+                    <ng-template #showDefaultImage>
+                      <div>
+                        <img [src]="getDeafaultPicture()" (error)="pictureErrorHandler($event)"
+                          class="product-image-1 w-100"
+                          alt="Image defaul">
+                      </div>
+                    </ng-template>
+
+
 
                   </a>
                   <span *ngIf="item?.isSale" class="onsale">Sale!</span>
                   <div class="add-action d-flex flex-column position-absolute">
                     <a title="Add To Wishlist" (click)="onAddToWishlist(item)" [class.active]="item?.iAmInterested">
-                      <i class="lnr lnr-heart" data-toggle="tooltip"
-                        data-placement="left" title="Wishlist"></i>
+                      <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="left" title="Wishlist"></i>
                     </a>
                     <a title="Quick View" (click)="onOpenQuickView(item)">
                       <i class="lnr lnr-eye" data-toggle="tooltip" data-placement="left" title="Quick View"></i>
@@ -93,7 +105,8 @@
                     <a class="btn product-cart button-icon flosun-button dark-btn" data-toggle="tooltip"
                       (click)="onAddToCart(item)" data-placement="top" title="Add to Cart"> <span>Add to Cart</span>
                     </a>
-                    <a class="list-icon" [class.active]="item?.iAmInterested" title="Add To Wishlist" (click)="onAddToWishlist(item)">
+                    <a class="list-icon" [class.active]="item?.iAmInterested" title="Add To Wishlist"
+                      (click)="onAddToWishlist(item)">
                       <i class="lnr lnr-heart" data-toggle="tooltip" data-placement="top" title="Wishlist"></i>
                     </a>
                   </div>

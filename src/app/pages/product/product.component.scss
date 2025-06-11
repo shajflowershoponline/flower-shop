@@ -1,2 +1,13 @@
 .swiper-slide {
 }
+
+
+.single-product-thumb {
+  .swiper-wrapper {
+    .swiper-slide{
+      img {
+        max-height: 100px!important;
+      }
+    }
+  }
+}

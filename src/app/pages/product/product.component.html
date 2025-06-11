@@ -24,21 +24,31 @@
         <div class="product-details-img">
           <div class="single-product-img swiper-container gallery-top popup-gallery">
             <div class="swiper-wrapper">
-              @for (item of product.productImages; track item?.file?.fileId) {
-              <div class="swiper-slide">
-                <a class="w-100">
-                  <img class="w-100" [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
-                </a>
-              </div>
+              @if(product.productImages.length > 0) {
+                @for (item of product.productImages; track item?.file?.fileId) {
+                <div class="swiper-slide">
+                  <a class="w-100">
+                    <img class="w-100" [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
+                  </a>
+                </div>
+                }
+              } @else {
+                <div class="swiper-slide">
+                  <a class="w-100">
+                    <img class="w-100" [src]="getDeafaultPicture()" (error)="pictureErrorHandler($event)" alt="Product">
+                  </a>
+                </div>
               }
             </div>
           </div>
           <div class="single-product-thumb swiper-container gallery-thumbs">
             <div class="swiper-wrapper">
-              @for (item of product.productImages; track item?.file?.fileId) {
-              <div class="swiper-slide">
-                <img [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
-              </div>
+              @if(product.productImages.length > 0) {
+                @for (item of product.productImages; track item?.file?.fileId) {
+                <div class="swiper-slide">
+                  <img [src]="item?.file?.url" (error)="pictureErrorHandler($event)" alt="Product">
+                </div>
+                }
               }
             </div>
             <!-- Add Arrows -->

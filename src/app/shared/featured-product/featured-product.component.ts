@@ -280,4 +280,12 @@ export class FeaturedProductComponent {
   onModalActionChange(event) {
     this.loadProducts();
   }
+
+  pictureErrorHandler(event) {
+    event.target.src = this.getDeafaultPicture();
+  }
+
+  getDeafaultPicture() {
+    return '../../../assets/images/thumbnail-product.png';
+  }
 }

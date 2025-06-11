@@ -23,11 +23,22 @@
               <div class="single-product position-relative mb-30" [ngClass]="{ 'not-allowed': !isAuthenticated }">
                 <div class="product-image">
                   <a routerLink="/product/{{item?.sku}}" class="d-block">
-                    <div *ngFor="let image of item.productImages | slice:0:2; let i = index">
-                      <img [src]="image.file.url"
-                        [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
-                        alt="Image {{ i + 1 }}">
-                    </div>
+
+                      <ng-container *ngIf="item?.productImages && item?.productImages.length > 0; else showDefaultImage">
+                        <div *ngFor="let image of item?.productImages | slice:0:2; let i = index">
+                          <img [src]="image?.file.url ?? getDeafaultPicture()" (error)="pictureErrorHandler($event)"
+                            [ngClass]="{ 'product-image-1 w-100': i === 0, 'product-image-2 position-absolute w-100': i === 1}"
+                            alt="Image {{ i + 1 }}">
+                        </div>
+                      </ng-container>
+
+                      <ng-template #showDefaultImage>
+                        <div>
+                          <img [src]="getDeafaultPicture()" (error)="pictureErrorHandler($event)"
+                            class="product-image-1 w-100"
+                            alt="Image defaul">
+                        </div>
+                      </ng-template>
                   </a>
                   <span *ngIf="item.isSale" class="onsale">Sale!</span>
                   <div *ngIf="isAuthenticated" class="add-action d-flex flex-column position-absolute">
