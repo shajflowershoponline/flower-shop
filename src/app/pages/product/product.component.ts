@@ -70,6 +70,8 @@ export class Productomponent {
           this.isLoading = false;
           if (product.success) {
             this.product = product.data;
+            this.product.price = Number(this.product.price);
+            this.product.discountPrice = Number(this.product.discountPrice);
           }
           if (wishlist.success && wishlist.data) {
             this.customerUserWishlist = wishlist.data;
@@ -169,7 +171,7 @@ export class Productomponent {
             productId: this.product?.productId,
             customerUserId: this.currentUser?.customerUserId,
             quantity: this.addToCart.toString(),
-            price: this.product?.price,
+            price: this.product?.price.toString(),
           }).subscribe(res => {
             if (res.success) {
               this.modalService.openResultModal({

@@ -63,8 +63,9 @@
             <h2 class="product-title">{{product?.name}}</h2>
           </div>
           <div class="price-box mb-2">
-            <span class="regular-price ">{{product?.discountPrice | currency: 'PHP'}}</span>
-            <span class="old-price"><del>{{product?.price | currency: 'PHP'}}</del></span>
+            <span class="regular-price">{{product?.discountPrice | currency: 'PHP'}}</span>
+            <span class="old-price" *ngIf="product?.price !== product?.discountPrice"><del>{{product?.price | currency:
+                'PHP'}}</del></span>
           </div>
           <div class="product-likes mb-3">
             <i class="fa fa-heart text-danger"></i> {{product.interested}}

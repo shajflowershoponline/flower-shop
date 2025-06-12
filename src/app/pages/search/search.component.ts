@@ -493,7 +493,7 @@ export class SearchComponent {
             productId: product?.productId,
             customerUserId: this.currentUser?.customerUserId,
             quantity: "1",
-            price: product?.price,
+            price: product?.price.toString(),
           }).subscribe(res => {
             if (res.success) {
               this.modalService.openResultModal({
