@@ -68,9 +68,9 @@ export class HeaderComponent {
         } else {
           this.showSearchBar = true;
         }
-        if(url.includes("/ai-search")) {
+        if (url.includes("/ai-search")) {
           this.searchType = "AI";
-        } else if(url.includes("/search")) {
+        } else if (url.includes("/search")) {
           this.searchType = "KEYWORD";
         }
       });
@@ -81,12 +81,13 @@ export class HeaderComponent {
       this.pageIndex = res > 0 ? res - 1 : 0;
     });
 
-    this.productService.searchResults$.subscribe(res=> {
+    this.productService.searchResults$.subscribe(res => {
       this.autoCompleteResults = [];
     })
 
-    this.aiSearchService.isAIResultFeeding$.subscribe(res=> {
+    this.aiSearchService.isAIResultFeeding$.subscribe(res => {
       this.isAIResultFeeding = res;
+      this.autoCompleteResults = [];
     });
   }
 
@@ -96,7 +97,7 @@ export class HeaderComponent {
     const clickedInside = this.searchBarWrap?.nativeElement.contains(targetElement);
     if (!clickedInside) {
       this.autoCompleteResults = []; // hide dropdown
-    } else if(this.searchKeyword && this.searchKeyword !== "" && targetElement.tagName.toLowerCase().includes("textarea")) {
+    } else if (this.searchKeyword && this.searchKeyword !== "" && targetElement.tagName.toLowerCase().includes("textarea")) {
       this.autoCompleteSearchSubject.next(this.searchKeyword);
     }
   }
@@ -182,7 +183,7 @@ export class HeaderComponent {
                 this.showSearchBar = false;
               }
             }
-            if(classList.some(x => x === 'sticky')) {
+            if (classList.some(x => x === 'sticky')) {
               const headerDynamicPaddingBotton = document.querySelector(".header-sticky").clientHeight;
               console.log("searchBarHeight ", headerDynamicPaddingBotton);
               document.querySelector(".main-header-area").setAttribute("style", `padding-bottom: ${headerDynamicPaddingBotton}px!important`);
@@ -232,9 +233,9 @@ export class HeaderComponent {
     textarea.style.height = 'auto'; // reset first
     textarea.style.height = `${textarea.scrollHeight}px`; // then set new height
 
-    if(this.searchType === "KEYWORD" && this.searchKeyword && this.searchKeyword !== "") {
+    if (this.searchType === "KEYWORD" && this.searchKeyword && this.searchKeyword !== "") {
       this.autoCompleteSearchSubject.next(this.searchKeyword);
-    } else if(this.searchType === "AI" && this.searchKeyword && this.searchKeyword !== "") {
+    } else if (this.searchType === "AI" && this.searchKeyword && this.searchKeyword !== "") {
       this.autoCompleteSearchSubject.next(this.searchKeyword);
     } else {
       this.autoCompleteResults = [];
@@ -243,10 +244,10 @@ export class HeaderComponent {
   }
 
   onAutoCompleteSeleced(searchKey: string = "") {
-    if(this.searchType === "KEYWORD" && (this.router?.url ?? "").includes("/search")) {
+    if (this.searchType === "KEYWORD" && (this.router?.url ?? "").includes("/search")) {
       this.searchKeyword = searchKey;
       this.productService.setSearch(searchKey);
-    } else if(this.searchType === "AI" &&  (this.router?.url ?? "").includes("/ai-search")) {
+    } else if (this.searchType === "AI" && (this.router?.url ?? "").includes("/ai-search")) {
       this.searchKeyword = searchKey;
       this.aiSearchService.setAIPrompt(searchKey);
     } else {
@@ -264,11 +265,10 @@ export class HeaderComponent {
     this.isAIResultFeeding = false;
     if (this.searchType === "AI" && !this.isAIResultFeeding) {
       this.router.navigate(['/ai-search'], {
-        queryParamsHandling: 'merge', // Keep other params if needed
-      }).then(()=> {
+      }).then(() => {
         this.aiSearchService.setAIPrompt(trimmed);
       });
-    } else if(this.searchType === "KEYWORD") {
+    } else if (this.searchType === "KEYWORD") {
       this.router.navigate(['/search'], {
         queryParams: { q: this.searchKeyword && this.searchKeyword !== "" ? this.searchKeyword : null },
       });
@@ -283,4 +283,18 @@ export class HeaderComponent {
       document.body.classList.toggle("fix");
     }
   }
+
+  focusAutoCompleteItem(event: KeyboardEvent, index: number) {
+    event.preventDefault();
+    console.log("focusAutoCompleteItem", index);
+    if (index > this.autoCompleteResults.length - 1) {
+      document.getElementById("search-button").focus();
+    } else {
+      const firstEl = document.getElementById(`auto-item-${index}`);
+      if (firstEl) {
+        firstEl.focus();
+      }
+    }
+  }
+
 }

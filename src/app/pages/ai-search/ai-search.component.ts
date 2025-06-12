@@ -30,7 +30,6 @@ import { QuickProductViewModalComponent } from 'src/app/shared/quick-product-vie
 })
 export class AISearchComponent {
   promptData: any;
-
   currentUser: CustomerUser;
   products: Product[] = [];
   categories: Category[] = [];
@@ -41,6 +40,7 @@ export class AISearchComponent {
   @ViewChild('quickView') quickView!: QuickProductViewModalComponent;
 
   isLoading = false;
+  hasError = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -56,7 +56,7 @@ export class AISearchComponent {
 
     this.aiSearchService.aiPrompt$.subscribe(res => {
       this.promptData = res;
-      if(this.promptData && this.promptData !== "") {
+      if (this.promptData && this.promptData !== "") {
         this.sendMessage();
       } else {
         this.products = [];
@@ -83,27 +83,39 @@ export class AISearchComponent {
       })
         .subscribe(res => {
           this.isLoading = false;
-
-          if(res.success) {
+          this.hasError = !res.success;
+          if (res.success) {
             const products = res.data?.results?.products ?? [];
             this.products = [];
-            for (let index = 0; index < products.length; index++) {
+            if (products.length > 0) {
+              for (let index = 0; index < products.length; index++) {
+                setTimeout(() => {
+                  const product = products[index];
+                  product.price = Number(product.price);
+                  product.discountPrice = Number(product.discountPrice);
+                  this.products.push(product);
+                  if ((index === products.length - 1)) {
+                    this.aiSearchService.setIsAIResultFeeding(false);
+                  }
+                }, index * 150); // 150ms delay per item
+              }
+            } else {
               setTimeout(() => {
-                this.products.push({ ...products[index] });
-                if((index === products.length - 1)) {
-                  this.aiSearchService.setIsAIResultFeeding(false);
-                }
-              }, index * 150); // 150ms delay per item
+                this.aiSearchService.setIsAIResultFeeding(false);
+              }, 1000)
             }
           } else {
+            this.error = res.message;
             this.aiSearchService.setIsAIResultFeeding(false);
           }
 
         }, (res) => {
+          this.hasError = true;
           this.isLoading = false;
           this.aiSearchService.setIsAIResultFeeding(false);
         });
     } catch (ex) {
+      this.hasError = true;
       this.isLoading = false;
       this.aiSearchService.setIsAIResultFeeding(false);
     }

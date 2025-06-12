@@ -132,7 +132,7 @@ textarea#search:focus {
     color: rgba(36, 49, 61, .4) !important;
   }
 
-  &:hover {
+  &:focus,&:hover,&:active {
     background: linear-gradient(135deg, #a81b3f, #cc2e5b);
     transform: scale(1.05);
   }
@@ -216,4 +216,9 @@ textarea#search:focus {
 .menu-item-has-children.open>.dropdown {
   display: block;
   height: auto !important;
+}
+
+ul.auto-complete-list:focus-within {
+  border: 2px solid #007bff;
+  background-color: #f0f8ff;
 }

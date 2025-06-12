@@ -40,7 +40,6 @@ export class CheckoutComponent {
   });
 
   deliveryFee = 0;
-  DELIVERY_RATE = 0;
   STORE_LOCATION_COORDINATES: {
     lat: number;
     lng: number;
@@ -78,7 +77,6 @@ export class CheckoutComponent {
 
 
     this.currentUser = this.storageService.getCurrentUser();
-    this.DELIVERY_RATE = Number(this.systemConfigService.get("DELIVERY_RATE") ?? 0);
 
     const coordinates = this.systemConfigService.get("STORE_LOCATION_COORDINATES");
     this.STORE_LOCATION_COORDINATES = {

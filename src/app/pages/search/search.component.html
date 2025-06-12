@@ -83,8 +83,8 @@
                   </div>
 
                   <div class="price-box">
-                    <span class="regular-price ">{{item.discountPrice | currency: 'PHP'}}</span>
-                    <span class="old-price"><del>{{item.price | currency: 'PHP'}}</del></span>
+                    <span class="regular-price">{{item?.discountPrice | currency: 'PHP'}}</span>
+                    <span class="old-price" *ngIf="item?.price !== item?.discountPrice"><del>{{item?.price | currency: 'PHP'}}</del></span>
                   </div>
                   <a class="btn product-cart" (click)="onAddToCart(item)">Add to Cart</a>
                 </div>

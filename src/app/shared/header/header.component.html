@@ -93,26 +93,34 @@
       <div #searchBarWrap class="search-bar-wrap mx-auto position-relative" style="max-width: 800px;">
         <div *ngIf="autoCompleteLoading" class="spinner-border text-primary" role="status" style="position: absolute;right: 10px;top: 10px;">
         </div>
-        <textarea id="aiPrompt" [(ngModel)]="searchKeyword" (input)="autoResizeSearch($event)" (keydown.enter)="$event.preventDefault();submitSearch()"
+        <textarea (keydown.arrowdown)="focusAutoCompleteItem($event, 0)" id="aiPrompt" [(ngModel)]="searchKeyword" (input)="autoResizeSearch($event)" (keydown.enter)="$event.preventDefault();submitSearch()"
           class="form-control shadow-sm"
           [placeholder]="searchType === 'KEYWORD' ? 'Search flower' : searchPlaceholder"></textarea>
 
         <!-- Autocomplete dropdown -->
         <ul class="list-group position-absolute w-100 shadow auto-complete-list" *ngIf="autoCompleteResults.length > 0"
           style="z-index: 1050; top: 100%; max-height: 200px; overflow-y: auto">
-          <li *ngFor="let option of autoCompleteResults" class="list-group-item list-group-item-action text-start" (click)="onAutoCompleteSeleced(option?.title)"
+          <li
+            tabindex="0"
+            *ngFor="let option of autoCompleteResults; let i = index"
+            class="list-group-item list-group-item-action text-start"
+            (keydown.enter)="onAutoCompleteSeleced(option?.title)"
+            (keydown.arrowup)="focusAutoCompleteItem($event, i > 0 ? i - 1 : i)"
+            (keydown.arrowdown)="focusAutoCompleteItem($event, i + 1)"
+            (click)="onAutoCompleteSeleced(option?.title)"
+            [id]="'auto-item-' + i"
             style="cursor: pointer">
             <strong>{{ option?.title }}</strong>
           </li>
         </ul>
         <!-- Clear Button (X) -->
-        <button *ngIf="searchType === 'KEYWORD'? !autoCompleteLoading && (searchKeyword??'').trim() !== '' : (searchKeyword??'').trim() !== ''" type="button" class="btn-clear position-absolute"
+        <button tabindex="-1" *ngIf="searchType === 'KEYWORD'? !autoCompleteLoading && (searchKeyword??'').trim() !== '' : (searchKeyword??'').trim() !== ''" type="button" class="btn-clear position-absolute"
           (click)="searchKeyword='';submitSearch()">
           <i class="fa fa-times"></i>
         </button>
 
         <!-- Submit Button (→) -->
-        <button [disabled]="!searchKeyword || searchKeyword?.trim() === '' || isAIResultFeeding" type="button"
+        <button id="search-button" [disabled]="!searchKeyword || searchKeyword?.trim() === '' || isAIResultFeeding" type="button"
           class="btn-submit position-absolute" (click)="submitSearch()">
           <i class="fa fa-arrow-right"></i>
         </button>

@@ -23,7 +23,6 @@ export class CartComponent {
   updatedCartItems: CartItems[] = [];
   currentCartItemSelected: CartItems | null = null;
   deliveryFee = 0;
-  DELIVERY_RATE = 0;
   STORE_LOCATION_COORDINATES: {
     lat: number;
     lng: number;
@@ -42,7 +41,6 @@ export class CartComponent {
     private snackBar: MatSnackBar,
     private router: Router,) {
     this.currentUser = this.storageService.getCurrentUser();
-    this.DELIVERY_RATE = Number(this.systemConfigService.get("DELIVERY_RATE") ?? 0);
 
     const coordinates = this.systemConfigService.get("STORE_LOCATION_COORDINATES");
     this.STORE_LOCATION_COORDINATES = {
